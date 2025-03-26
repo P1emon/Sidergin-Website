@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\Sidergin-website.props" />
+</Project>
