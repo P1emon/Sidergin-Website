@@ -1,0 +1,109 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liên hệ - SIDERGIN Compresse</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+
+    <main class="contact-container">
+        <section class="contact-hero">
+            <h1>Liên hệ với chúng tôi</h1>
+            <p>Chúng tôi luôn sẵn sàng hỗ trợ bạn! Điền vào biểu mẫu dưới đây hoặc liên hệ trực tiếp qua các kênh bên dưới.</p>
+        </section>
+
+        <section class="contact-content">
+            <div class="contact-form-section">
+                <h2>Gửi tin nhắn cho chúng tôi</h2>
+                <form id="contact-form" action="mailto:admin123@gmail.com" method="post" enctype="text/plain">
+                    <div class="form-group">
+                        <input type="text" id="name" name="name" required>
+                        <label for="name">Họ và tên</label>
+                        <small>Vui lòng nhập đầy đủ họ tên</small>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="tel" id="phone" name="phone" required>
+                        <label for="phone">Số điện thoại</label>
+                        <small>Nhập số điện thoại để chúng tôi liên hệ lại</small>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="email" id="email" name="email" required>
+                        <label for="email">Email</label>
+                        <small>Nhập email để nhận phản hồi</small>
+                    </div>
+
+                    <div class="form-group">
+                        <textarea id="message" name="message" required></textarea>
+                        <label for="message">Tin nhắn</label>
+                        <small>Viết nội dung tin nhắn của bạn</small>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        <span>Gửi tin nhắn</span>
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+
+            <div class="contact-info-section">
+                <h2>Thông tin liên hệ</h2>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-phone-alt"></i>
+                        <div>
+                            <h4>Điện thoại</h4>
+                            <p>0123456789</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-comment-alt"></i>
+                        <div>
+                            <h4>Zalo</h4>
+                            <p>0123456789</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h4>Email</h4>
+                            <p><a href="mailto:admin123@gmail.com">admin123@gmail.com</a></p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <h4>Địa chỉ</h4>
+                            <p>123 Đường Số 1, Quận 1, TP. Hồ Chí Minh</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="map-section">
+            <h2>Địa điểm của chúng tôi</h2>
+            <div class="map-container">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.447979614614!2d106.69875531474895!3d10.776389992317!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f38f8b5d803%3A0x4e0b2b0e2b0e2b0e!2sHo%20Chi%20Minh%20City%2C%20Vietnam!5e0!3m2!1sen!2s!4v1698765432100!5m2!1sen!2s" width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+            </div>
+        </section>
+    </main>
+
+
+
+    <script>
+        // Xử lý form (có thể thêm logic gửi dữ liệu nếu cần)
+        document.getElementById('contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Cảm ơn bạn đã gửi tin nhắn! Chúng tôi sẽ liên hệ lại sớm nhất.');
+            this.reset();
+        });
+    </script>
+</body>
+</html>

@@ -17,6 +17,22 @@ namespace Sidergin_website.Controllers
         {
             return View();
         }
+        public IActionResult Help()
+        {
+            return View();
+        }
+        public IActionResult Contact()
+        {
+            return View();
+        }
+        public IActionResult Checkout()
+        {
+            return View();
+        }
+        public IActionResult News()
+        {
+            return View();
+        }
 
         public IActionResult Privacy()
         {
