@@ -128,7 +128,8 @@
                 </div>
 
                 <div class="purchase-type">
-                    <button class="type-btn wholesale" onclick="proceedToCheckout('wholesale')">Sỉ</button>
+                    <button class="type-btn wholesale" onclick="window.location.href='@Url.Action("Index", "Order")'">Sỉ</button>
+
                     <button class="type-btn retail active" onclick="proceedToCheckout('retail')">Lẻ</button>
                 </div>
             </div>

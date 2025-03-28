@@ -1,5 +1,4 @@
-﻿
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -8,9 +7,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-
 
     <main class="checkout-container">
         <section class="checkout-hero">
@@ -27,7 +26,10 @@
                         <div class="order-item-info">
                             <h4>SIDERGIN® Compresse 30 viên</h4>
                             <p id="order-type">Loại: <span>Sỉ</span></p>
-                            <p id="order-quantity">Số lượng: <span>1</span></p>
+                            <div class="form-group">
+                                <label for="order-quantity-input">Số lượng:</label>
+                                <input type="number" id="order-quantity-input" name="order-quantity" min="1" value="1" onchange="updateTotalPrice()">
+                            </div>
                             <p id="order-price">Đơn giá: <span>400.000 VNĐ</span></p>
                         </div>
                     </div>
@@ -41,28 +43,28 @@
                 <h2>Thông tin giao hàng</h2>
                 <form id="checkout-form" onsubmit="handleCheckout(event)">
                     <div class="form-group">
-                        <input type="text" id="checkout-name" name="name" required="">
+                        <input type="text" id="checkout-name" name="name" required>
                         <label for="checkout-name">Họ và tên</label>
                         <small>Nhập đầy đủ họ tên</small>
                     </div>
                     <div class="form-group">
-                        <input type="tel" id="checkout-phone" name="phone" required="">
+                        <input type="tel" id="checkout-phone" name="phone" required>
                         <label for="checkout-phone">Số điện thoại</label>
                         <small>Nhập số điện thoại để liên hệ</small>
                     </div>
                     <div class="form-group">
-                        <input type="email" id="checkout-email" name="email" required="">
+                        <input type="email" id="checkout-email" name="email" required>
                         <label for="checkout-email">Email</label>
                         <small>Nhập email để nhận thông tin đơn hàng</small>
                     </div>
                     <div class="form-group">
-                        <textarea id="checkout-address" name="address" required=""></textarea>
+                        <textarea id="checkout-address" name="address" required></textarea>
                         <label for="checkout-address">Địa chỉ giao hàng</label>
                         <small>Nhập địa chỉ nhận hàng</small>
                     </div>
                     <div class="form-group">
                         <label for="payment-method">Phương thức thanh toán</label>
-                        <select id="payment-method" name="payment-method" required="">
+                        <select id="payment-method" name="payment-method" required>
                             <option value="cod">Thanh toán khi nhận hàng (COD)</option>
                             <option value="bank">Chuyển khoản ngân hàng</option>
                         </select>
@@ -76,15 +78,69 @@
         </section>
     </main>
 
-    
-
     <div class="zoom-modal" id="zoom-modal">
         <span class="close-zoom">×</span>
         <img id="zoomed-image" src="">
     </div>
 
     <script>
-        
+        function updateTotalPrice() {
+            let quantity = document.getElementById("order-quantity-input").value;
+            let price = 400000;
+            let totalPrice = quantity * price;
+            document.getElementById("order-total-price").innerText = totalPrice.toLocaleString() + " VNĐ";
+        }
+
+        async function handleCheckout(event) {
+            event.preventDefault();
+
+            const orderData = {
+                    userId: 1,
+                    quantity: document.getElementById("order-quantity-input").value,
+                    currentPrice: 400000,
+                    totalAmount: document.getElementById("order-quantity-input").value * 400000,
+                    paymentMethod: document.getElementById("payment-method").value,
+                    paymentStatus: "pending",
+                    orderStatus: "pending_payment",
+                    notes: document.getElementById("checkout-address").value,
+                    vnpayTransactionId: "demo",
+                    orderDate: new Date().toISOString()
+                };
+
+
+            try {
+                const response = await fetch("/api/orders/create", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(orderData)
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    Swal.fire({
+                        title: "Đặt hàng thành công!",
+                        text: "Mã đơn hàng: " + result.orderId,
+                        icon: "success"
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        title: "Lỗi!",
+                        text: result.message,
+                        icon: "error"
+                    });
+                }
+            } catch (error) {
+                Swal.fire({
+                    title: "Lỗi kết nối!",
+                    text: "Vui lòng thử lại sau.",
+                    icon: "error"
+                });
+            }
+        }
     </script>
 </body>
 </html>

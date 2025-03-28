@@ -2,7 +2,7 @@
 
 namespace Sidergin_website.Controllers
 {
-    public class WholesalePaymentController : Controller
+    public class OrderController : Controller
     {
         public IActionResult Index()
         {
