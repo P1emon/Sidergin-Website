@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Sidergin_website.Data;
 using Sidergin_website.DTO;
 using Sidergin_website.Models;
@@ -15,14 +16,16 @@ namespace Sidergin_website.ApiControllers
     public class OrderApiController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly IConfiguration _configuration;
 
-        public OrderApiController(AppDbContext context)
+        public OrderApiController(AppDbContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> CreateOrder( OrderDTO orderDto)
+        public async Task<IActionResult> CreateOrder(OrderDTO orderDto)
         {
             if (!ModelState.IsValid)
             {
@@ -43,26 +46,42 @@ namespace Sidergin_website.ApiControllers
                 OrderDate = orderDto.OrderDate
             };
 
-
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
 
+            // Lấy email của user từ database
+            var user = await _context.Users.FindAsync(orderDto.UserId);
+            string userEmail = user?.Email;
+
+            if (!string.IsNullOrEmpty(userEmail))
+            {
+                // Gửi email dưới nền (không chặn API)
+                Task.Run(() => SendOrderConfirmationEmail(userEmail, order));
+            }
+
             return Ok(new { message = "Đơn hàng đã được tạo thành công!", orderId = order.OrderId });
         }
+
         private async Task SendOrderConfirmationEmail(string email, Order order, bool isAdmin = false)
         {
             if (string.IsNullOrEmpty(email))
             {
-                Console.WriteLine("Email trống, không gửi");
+                Console.WriteLine("Email trống, không gửi.");
                 return;
             }
 
             try
             {
-                using var smtpClient = new SmtpClient("smtp.gmail.com")
+                // Lấy thông tin SMTP từ cấu hình
+                string smtpServer = _configuration["EmailSettings:SmtpServer"];
+                int smtpPort = int.Parse(_configuration["EmailSettings:SmtpPort"]);
+                string senderEmail = _configuration["EmailSettings:SenderEmail"];
+                string senderPassword = _configuration["EmailSettings:SenderPassword"];
+
+                using var smtpClient = new SmtpClient(smtpServer)
                 {
-                    Port = 587,
-                    Credentials = new NetworkCredential("phannguyendangkhoa0915@gmail.com", "iagqpgyvbegvfdoh"),
+                    Port = smtpPort,
+                    Credentials = new NetworkCredential(senderEmail, senderPassword),
                     EnableSsl = true,
                 };
 
@@ -73,7 +92,7 @@ namespace Sidergin_website.ApiControllers
 
                 var mailMessage = new MailMessage
                 {
-                    From = new MailAddress("phannguyendangkhoa0915@gmail.com"),
+                    From = new MailAddress(senderEmail),
                     Subject = subject,
                     Body = body,
                     IsBodyHtml = true,
@@ -87,11 +106,7 @@ namespace Sidergin_website.ApiControllers
             catch (Exception ex)
             {
                 Console.WriteLine($"Lỗi gửi email: {ex.Message}");
-                throw new Exception($"Lỗi gửi email: {ex.Message}");
             }
         }
-
     }
-
-
 }
