@@ -8,6 +8,7 @@ using System;
 using System.Net.Mail;
 using System.Net;
 using System.Threading.Tasks;
+using System.Numerics;
 
 namespace Sidergin_website.ApiControllers
 {
@@ -52,17 +53,19 @@ namespace Sidergin_website.ApiControllers
             // Lấy email của user từ database
             var user = await _context.Users.FindAsync(orderDto.UserId);
             string userEmail = user?.Email;
+            string phone = user?.Phone ?? "Không có số điện thoại";
 
             if (!string.IsNullOrEmpty(userEmail))
             {
-                // Gửi email dưới nền (không chặn API)
-                Task.Run(() => SendOrderConfirmationEmail(userEmail, order));
+                Task.Run(() => SendOrderConfirmationEmail(userEmail, order, phone));
             }
+
 
             return Ok(new { message = "Đơn hàng đã được tạo thành công!", orderId = order.OrderId });
         }
 
-        private async Task SendOrderConfirmationEmail(string email, Order order, bool isAdmin = false)
+        private async Task SendOrderConfirmationEmail(string email, Order order, string phone, bool isAdmin = false)
+
         {
             if (string.IsNullOrEmpty(email))
             {
@@ -93,6 +96,8 @@ namespace Sidergin_website.ApiControllers
                         <hr>
                         <p><strong>🛒 Mã đơn hàng:</strong> {order.OrderId}</p>
                         <p><strong>👤 Khách hàng:</strong> {order.UserId}</p>
+                        <p><strong>📧 Email:</strong> {email}</p>
+                        <p><strong>📞 Số điện thoại:</strong> {phone}</p>
                         <p><strong>📦 Số lượng:</strong> {order.Quantity}</p>
                         <p><strong>💰 Tổng tiền:</strong> {order.TotalAmount:C}</p>
                         <p><strong>💳 Phương thức thanh toán:</strong> {order.PaymentMethod}</p>
@@ -110,6 +115,8 @@ namespace Sidergin_website.ApiControllers
                         <hr>
                         <p><strong>🛒 Mã đơn hàng:</strong> {order.OrderId}</p>
                         <p><strong>👤 Khách hàng:</strong> {order.UserId}</p>
+                        <p><strong>📧 Email:</strong> {email}</p>
+                        <p><strong>📞 Số điện thoại:</strong> {phone}</p>
                         <p><strong>📦 Số lượng:</strong> {order.Quantity}</p>
                         <p><strong>💰 Tổng tiền:</strong> {order.TotalAmount:C}</p>
                         <p><strong>💳 Phương thức thanh toán:</strong> {order.PaymentMethod}</p>
