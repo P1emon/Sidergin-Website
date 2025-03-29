@@ -86,9 +86,41 @@ namespace Sidergin_website.ApiControllers
                 };
 
                 string subject = isAdmin ? "Thông báo đơn hàng mới" : "Xác nhận đơn hàng";
-                string body = isAdmin ?
-                    $"<p>Admin, có đơn hàng mới:</p><p>Mã đơn hàng: {order.OrderId}</p><p>Người mua: {order.UserId}</p><p>Số lượng: {order.Quantity}</p><p>Tổng tiền: {order.TotalAmount}</p><p>Phương thức thanh toán: {order.PaymentMethod}</p><p>Trạng thái đơn hàng: {order.OrderStatus}</p><p>Ghi chú: {order.Notes}</p>" :
-                    $"<p>Chào bạn,</p><p>Đơn hàng của bạn đã được xác nhận.</p><p>Mã đơn hàng: {order.OrderId}</p><p>Số lượng: {order.Quantity}</p><p>Tổng tiền: {order.TotalAmount}</p><p>Phương thức thanh toán: {order.PaymentMethod}</p><p>Trạng thái đơn hàng: {order.OrderStatus}</p><p>Ghi chú: {order.Notes}</p>";
+                string body = isAdmin
+                    ? $@"<h2>📢 Thông báo đơn hàng mới cần xử lý</h2>
+                        <p>Xin chào <strong>Nhân viên chăm sóc khách hàng</strong>,</p>
+                        <p>Một đơn hàng mới vừa được tạo. Vui lòng liên hệ với khách hàng trong thời gian sớm nhất để xác nhận thông tin và hỗ trợ quá trình đặt hàng.</p>
+                        <hr>
+                        <p><strong>🛒 Mã đơn hàng:</strong> {order.OrderId}</p>
+                        <p><strong>👤 Khách hàng:</strong> {order.UserId}</p>
+                        <p><strong>📦 Số lượng:</strong> {order.Quantity}</p>
+                        <p><strong>💰 Tổng tiền:</strong> {order.TotalAmount:C}</p>
+                        <p><strong>💳 Phương thức thanh toán:</strong> {order.PaymentMethod}</p>
+                        <p><strong>📌 Trạng thái đơn hàng:</strong> {order.OrderStatus}</p>
+                        <p><strong>📝 Ghi chú từ khách hàng:</strong> {order.Notes}</p>
+                        <hr>
+                        <p>📞 <strong>Hãy gọi ngay cho khách hàng để xác nhận thông tin và hỗ trợ họ hoàn tất đơn hàng.</strong></p>
+                        <p>💼 Nếu có bất kỳ vấn đề gì, vui lòng báo cáo lại cho quản lý.</p>
+                        <p>Trân trọng,</p>
+                        <p><strong>Hệ thống quản lý đơn hàng</strong></p>"
+
+                    : $@"<h2>📢 Thông báo đơn hàng mới cần xử lý</h2>
+                        <p>Xin chào <strong>Nhân viên chăm sóc khách hàng</strong>,</p>
+                        <p>Một đơn hàng mới vừa được tạo. Vui lòng liên hệ với khách hàng trong thời gian sớm nhất để xác nhận thông tin và hỗ trợ quá trình đặt hàng.</p>
+                        <hr>
+                        <p><strong>🛒 Mã đơn hàng:</strong> {order.OrderId}</p>
+                        <p><strong>👤 Khách hàng:</strong> {order.UserId}</p>
+                        <p><strong>📦 Số lượng:</strong> {order.Quantity}</p>
+                        <p><strong>💰 Tổng tiền:</strong> {order.TotalAmount:C}</p>
+                        <p><strong>💳 Phương thức thanh toán:</strong> {order.PaymentMethod}</p>
+                        <p><strong>📌 Trạng thái đơn hàng:</strong> {order.OrderStatus}</p>
+                        <p><strong>📝 Ghi chú từ khách hàng:</strong> {order.Notes}</p>
+                        <hr>
+                        <p>📞 <strong>Hãy gọi ngay cho khách hàng để xác nhận thông tin và hỗ trợ họ hoàn tất đơn hàng.</strong></p>
+                        <p>💼 Nếu có bất kỳ vấn đề gì, vui lòng báo cáo lại cho quản lý.</p>
+                        <p>Trân trọng,</p>
+                        <p><strong>Hệ thống quản lý đơn hàng</strong></p>";
+
 
                 var mailMessage = new MailMessage
                 {
