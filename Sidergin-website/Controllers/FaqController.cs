@@ -14,7 +14,7 @@ namespace Sidergin_website.Controllers
 
         public IActionResult Index()
         {
-            var faqs = _context.Faqs.OrderBy(f => f.CreatedAt).ToList();
+            var faqs = _context.Fqas.OrderBy(f => f.CreatedAt).ToList();
             return View(faqs);
         }
     }
