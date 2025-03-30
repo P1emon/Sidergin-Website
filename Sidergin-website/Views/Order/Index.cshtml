@@ -10,7 +10,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-
     <main class="checkout-container">
         <section class="checkout-hero">
             <h1>Thanh toán đơn hàng</h1>
@@ -28,7 +27,7 @@
                             <p id="order-type">Loại: <span>Sỉ</span></p>
                             <div class="form-group">
                                 <label for="order-quantity-input">Số lượng:</label>
-                                <input type="number" id="order-quantity-input" name="order-quantity" min="1" value="1" onchange="updateTotalPrice()">
+                                <input type="number" id="order-quantity-input" name="order-quantity" min="50" value="50" onchange="updateTotalPrice()">
                             </div>
                             <p id="order-price">Đơn giá: <span>400.000 VNĐ</span></p>
                         </div>
@@ -63,7 +62,7 @@
                         <small>Nhập địa chỉ nhận hàng</small>
                     </div>
                     <div class="form-group">
-                        <label for="payment-method">Phương thức thanh toán</label>
+                        <label for="payment-method"></label>
                         <select id="payment-method" name="payment-method" required>
                             <option value="cod">Thanh toán khi nhận hàng (COD)</option>
                             <option value="bank">Chuyển khoản ngân hàng</option>
@@ -78,14 +77,13 @@
         </section>
     </main>
 
-    <div class="zoom-modal" id="zoom-modal">
-        <span class="close-zoom">×</span>
-        <img id="zoomed-image" src="">
-    </div>
-
     <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            updateTotalPrice();
+        });
+
         function updateTotalPrice() {
-            let quantity = document.getElementById("order-quantity-input").value;
+            let quantity = parseInt(document.getElementById("order-quantity-input").value);
             let price = 400000;
             let totalPrice = quantity * price;
             document.getElementById("order-total-price").innerText = totalPrice.toLocaleString() + " VNĐ";
@@ -93,20 +91,29 @@
 
         async function handleCheckout(event) {
             event.preventDefault();
+            let quantity = parseInt(document.getElementById("order-quantity-input").value);
+
+            if (quantity < 50) {
+                Swal.fire({
+                    title: "Lỗi!",
+                    text: "Số lượng đặt hàng tối thiểu là 50.",
+                    icon: "error"
+                });
+                return;
+            }
 
             const orderData = {
-                    userId: 1,
-                    quantity: document.getElementById("order-quantity-input").value,
-                    currentPrice: 400000,
-                    totalAmount: document.getElementById("order-quantity-input").value * 400000,
-                    paymentMethod: document.getElementById("payment-method").value,
-                    paymentStatus: "pending",
-                    orderStatus: "pending_payment",
-                    notes: document.getElementById("checkout-address").value,
-                    vnpayTransactionId: "demo",
-                    orderDate: new Date().toISOString()
-                };
-
+                userId: 1,
+                quantity: quantity,
+                currentPrice: 400000,
+                totalAmount: quantity * 400000,
+                paymentMethod: document.getElementById("payment-method").value,
+                paymentStatus: "pending",
+                orderStatus: "pending_payment",
+                notes: document.getElementById("checkout-address").value,
+                vnpayTransactionId: "demo",
+                orderDate: new Date().toISOString()
+            };
 
             try {
                 const response = await fetch("/api/orders/create", {
@@ -120,8 +127,7 @@
                 const result = await response.json();
                 if (response.ok) {
                     Swal.fire({
-                        title: "Đặt hàng thành công!",
-                        text: "Mã đơn hàng: " + result.orderId,
+                        title: "Đặt hàng thành công!      \n Nhân viên sẽ sớm liên hệ với bạn.",
                         icon: "success"
                     }).then(() => {
                         window.location.reload();

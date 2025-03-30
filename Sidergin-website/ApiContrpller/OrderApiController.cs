@@ -61,7 +61,8 @@ namespace Sidergin_website.ApiControllers
             }
 
 
-            return Ok(new { message = "Đơn hàng đã được tạo thành công!", orderId = order.OrderId });
+            return Ok(new { message = "Đơn hàng đã được tạo thành công! Nhân viên sẽ sớm liên hệ với bạn."});
+
         }
 
         private async Task SendOrderConfirmationEmail(string email, Order order, string phone, bool isAdmin = false)
