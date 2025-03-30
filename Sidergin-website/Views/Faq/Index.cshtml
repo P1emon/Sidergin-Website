@@ -1,0 +1,110 @@
+﻿@model List<Fqa>
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .faq-container { width: 60%; margin: auto; }
+        .faq-item { border-bottom: 1px solid #ddd; padding: 10px 0; }
+        .faq-question { font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; }
+        .faq-answer { display: none; padding-top: 5px; }
+    </style>
+</head>
+<body>
+
+
+
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trợ giúp - SIDERGIN Compresse</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+
+    <main class="help-container">
+        <section class="help-hero">
+            <h1>Trợ giúp & Hỗ trợ</h1>
+            <p>Chúng tôi ở đây để giúp bạn! Tìm câu trả lời cho các câu hỏi thường gặp hoặc liên hệ với chúng tôi để được hỗ trợ thêm.</p>
+        </section>
+        @*câu hỏi lấy dữ liệu từ database*@
+        <section class="faq-section">
+            <div class="faq-container">
+                <h2>Câu hỏi thường gặp</h2>
+
+                @foreach (var faq in Model)
+                {
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleAnswer(@faq.FqaId)">
+                            @faq.Question
+                            <span id="arrow-@faq.FqaId">▼</span>
+                        </div>
+                        <div class="faq-answer" id="answer-@faq.FqaId">
+                            @faq.Answer
+                        </div>
+                    </div>
+                }
+            </div>
+        </section>
+        <section class="contact-section">
+            <h2>Liên hệ với chúng tôi</h2>
+            <p>Nếu bạn cần thêm thông tin hoặc hỗ trợ, đừng ngần ngại liên hệ với chúng tôi!</p>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <i class="fas fa-phone-alt"></i>
+                    <div>
+                        <h4>Điện thoại</h4>
+                        <p>0123456789</p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-comment-alt"></i>
+                    <div>
+                        <h4>Zalo</h4>
+                        <p>0123456789</p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <div>
+                        <h4>Email</h4>
+                        <p><a href="mailto:admin123@gmail.com">admin123@gmail.com</a></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+
+
+    <script>
+        // Xử lý mở/đóng FAQ
+        document.querySelectorAll('.faq-question').forEach(item => {
+            item.addEventListener('click', () => {
+                const answer = item.nextElementSibling;
+                const isOpen = answer.style.display === 'block';
+
+                // Đóng tất cả các câu trả lời khác
+                document.querySelectorAll('.faq-answer').forEach(ans => {
+                    ans.style.display = 'none';
+                });
+
+                // Mở/đóng câu trả lời hiện tại
+                answer.style.display = isOpen ? 'none' : 'block';
+            });
+        });
+    </script>
+</body>
+</html>
