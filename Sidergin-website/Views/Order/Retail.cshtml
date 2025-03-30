@@ -12,7 +12,7 @@
 <body>
     <main class="checkout-container">
         <section class="checkout-hero">
-            <h1>Đặt hàng với số lượng lớn</h1>
+            <h1>Thanh Toán đơn hàn</h1>
             <p>Vui lòng kiểm tra thông tin đơn hàng và điền thông tin giao hàng bên dưới.</p>
         </section>
 
@@ -24,10 +24,10 @@
                         <img src="https://via.placeholder.com/80x80/f5f5f5/333333?text=SIDERGIN" alt="SIDERGIN Compresse">
                         <div class="order-item-info">
                             <h4>SIDERGIN® Compresse 30 viên</h4>
-                            <p id="order-type">Loại: <span>Sỉ</span></p>
+                            <p id="order-type">Loại: <span>Lẻ</span></p>
                             <div class="form-group">
                                 <label for="order-quantity-input">Số lượng:</label>
-                                <input type="number" id="order-quantity-input" name="order-quantity" min="50" value="50" onchange="updateTotalPrice()">
+                                <input type="number" id="order-quantity-input" name="order-quantity" min="1" value="1" onchange="updateTotalPrice()">
                             </div>
                             <p id="order-price">Đơn giá: <span>400.000 VNĐ</span></p>
                         </div>
@@ -79,8 +79,19 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+            // Recuperar cantidad de la URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const quantityParam = urlParams.get('quantity');
+
+            // Si hay un parámetro de cantidad válido, actualizar el campo
+            if (quantityParam && !isNaN(quantityParam)) {
+                document.getElementById("order-quantity-input").value = quantityParam;
+            }
+
+            // Actualizar el precio total basado en la cantidad
             updateTotalPrice();
         });
+
 
         function updateTotalPrice() {
             let quantity = parseInt(document.getElementById("order-quantity-input").value);
@@ -99,14 +110,7 @@
             const customerEmail = document.getElementById("checkout-email").value;
             const customerAddress = document.getElementById("checkout-address").value;
 
-            if (quantity < 50) {
-                Swal.fire({
-                    title: "Lỗi!",
-                    text: "Số lượng đặt hàng tối thiểu là 50.",
-                    icon: "error"
-                });
-                return;
-            }
+            
 
             const orderData = {
                 userId: 1,

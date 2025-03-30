@@ -12,5 +12,9 @@
         public string? Notes { get; set; }
         public string? VnpayTransactionId { get; set; }
         public DateTime OrderDate { get; set; } = DateTime.UtcNow;
+        // Thêm trường để nhận tên từ view
+        public string UserName { get; set; }
+        public string UserPhone { get; set; }
+        public string UserEmail { get; set; }
     }
 }

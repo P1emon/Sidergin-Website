@@ -8,5 +8,9 @@ namespace Sidergin_website.Controllers
         {
             return View();
         }
+        public IActionResult Retail()
+        {
+            return View();
+        }
     }
 }
