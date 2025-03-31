@@ -29,6 +29,7 @@ namespace Sidergin_website.Controllers
         }
         public IActionResult Index()
         {
+
             return View();
         }
         [HttpPost]
