@@ -6,6 +6,20 @@
     font-family: 'Poppins', sans-serif;
 }
 
+/* Thêm style cho auth modal */
+#authModal .modal-dialog {
+    max-width: 600px;
+}
+
+#authModal .modal-content {
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+#authIframe {
+    min-height: 400px;
+}
+
 body {
     background-color: #f8f9fa;
     color: #333;

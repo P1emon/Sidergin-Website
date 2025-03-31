@@ -29,7 +29,13 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="#">Thông tin cá nhân</a></li>
-                                <li><a class="dropdown-item" href="javascript:void(0);" onclick="logout()">Đăng xuất</a></li>
+                           
+                                <a>
+                              
+                                    <form asp-controller="Account" asp-action="Logout" method="post" id="logoutForm">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="dropdown-item">Đăng xuất</button>
+                                    </form>
                             </ul>
                         </div>
                     }
@@ -91,27 +97,7 @@
         document.getElementById('auth-link').addEventListener('click', async function (e) {
             e.preventDefault();
 
-            // Hàm kiểm tra trạng thái đăng nhập
-            function checkLoginStatus() {
-                return fetch('/Account/CheckLoginStatus', {
-                    method: 'GET',
-                    headers: {
-                        'Accept': 'application/json'
-                    }
-                })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.json();
-                    })
-                    .then(data => data.isAuthenticated)
-                    .catch(error => {
-                        console.error('Lỗi kiểm tra trạng thái đăng nhập:', error);
-                        return false;
-                    });
-            }
-
+          
             // Hàm xử lý sự kiện khi nhấp vào liên kết "Đăng nhập/Đăng ký"
             document.getElementById('auth-link').addEventListener('click', async function (e) {
                 e.preventDefault();
@@ -131,16 +117,22 @@
                 }
             });
 
-            function openAuthModal() {
-                document.getElementById('authIframe').src = "/Account/Index"; // Load trang đăng nhập/đăng ký vào iframe
-                var authModal = new bootstrap.Modal(document.getElementById('authModal')); // Khởi tạo Bootstrap Modal
-                authModal.show(); // Hiển thị modal
-            }
+         
 
-            // Hàm đăng xuất (dùng Controller thông thường)
-            function logout() {
-                window.location.href = "/Account/Logout";
-            }
+           
+            // Xử lý dropdown khi click
+            document.querySelector('.dropdown-toggle').addEventListener('click', function (e) {
+                e.preventDefault();
+                const dropdown = new bootstrap.Dropdown(this);
+                dropdown.toggle();
+            });
+
+            // Tự động đóng dropdown khi click ra ngoài
+            document.addEventListener('click', function (e) {
+                if (!e.target.closest('.dropdown')) {
+                    bootstrap.Dropdown.getInstance(document.querySelector('.dropdown-toggle'))?.hide();
+                }
+            });
 
 
     </script>

@@ -115,17 +115,49 @@ namespace Sidergin_website.Controllers
                 return false;
             }
         }
-        public IActionResult Logout()
+        [HttpGet]
+        public IActionResult Logoutt()
         {
-            HttpContext.SignOutAsync();
-            return RedirectToAction("LoginPage"); // Điều hướng về trang chứa modal login
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout()
+        {
+            if (HttpContext.Session != null) // Kiểm tra null
+            {
+                await HttpContext.Session.CommitAsync();
+                HttpContext.Session.Clear();
+            }
+
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            // Xóa tất cả cookies liên quan
+            foreach (var cookie in HttpContext.Request.Cookies.Keys)
+            {
+                if (cookie.StartsWith(".AspNetCore."))
+                    Response.Cookies.Delete(cookie, new CookieOptions { Secure = true });
+            }
+
+            // Hủy session server-side
+            await HttpContext.Session.CommitAsync();
+            HttpContext.Session.Clear();
+
+            // Redirect an toàn
+            return RedirectToAction("PostLogout", "Account");
         }
 
-        // Action này hiển thị View chứa modal login
-        public IActionResult LoginPage()
+        [HttpGet]
+        public IActionResult PostLogout()
         {
-            return View("_layout"); // Nếu modal nằm trong trang Home, thay "Index" thành trang của bạn
+            // Ngăn chặn back button
+            Response.Headers["Cache-Control"] = "no-cache, no-store";
+            Response.Headers["Pragma"] = "no-cache";
+            Response.Headers["Expires"] = "0";
+
+            return View(); // Trang thông báo đăng xuất thành công
         }
+
 
 
 
