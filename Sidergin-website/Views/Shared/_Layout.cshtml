@@ -24,29 +24,25 @@
                     @if (User.Identity.IsAuthenticated)
                     {
                         <div class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">
+                            <a href="javascript:void(0);" class="dropdown-toggle" id="userDropdown">
                                 Xin chào, @User.Identity.Name
                             </a>
-                            <ul class="dropdown-menu">
+                            <ul class="dropdown-menu" id="userDropdownMenu">
                                 <li><a class="dropdown-item" href="#">Thông tin cá nhân</a></li>
-                           
-                                <a>
-                              
+                                <li>
                                     <form asp-controller="Account" asp-action="Logout" method="post" id="logoutForm">
                                         @Html.AntiForgeryToken()
                                         <button type="submit" class="dropdown-item">Đăng xuất</button>
                                     </form>
+                                </li>
                             </ul>
                         </div>
                     }
                     else
                     {
-                        <a href="javascript:void(0);" onclick="openAuthModal()">Đăng nhập/Đăng ký</a>
-
+                        <a href="javascript:void(0);" id="login-link">Đăng nhập/Đăng ký</a>
                     }
-
                 </li>
-
 
             </ul>
         </nav>
@@ -89,48 +85,67 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script>
-   
+            document.addEventListener('DOMContentLoaded', function () {
+                // Kiểm tra trạng thái đăng nhập (giả sử bạn có một biến hoặc endpoint kiểm tra trạng thái đăng nhập)
+                fetch('/Account/CheckLoginStatus')
+                    .then(response => response.json())
+                    .then(data => {
+                        const authLink = document.querySelector('#auth-link a');
+                        if (authLink) {
+                            authLink.removeAttribute('onclick');
+                            if (data.isLoggedIn) {
+                                // Nếu đã đăng nhập, hiển thị menu đăng xuất
+                                authLink.textContent = 'Đăng xuất';
+                                authLink.addEventListener('click', function (e) {
+                                    e.preventDefault();
+                                    fetch('/Account/Logout', { method: 'POST' }).then(() => {
+                                        window.location.reload(); // Tải lại trang sau khi đăng xuất
+                                    });
+                                });
+                            } else {
+                                // Nếu chưa đăng nhập, chuyển hướng đến trang đăng nhập
+                                authLink.textContent = 'Đăng nhập';
+                                authLink.addEventListener('click', function (e) {
+                                    e.preventDefault();
+                                    window.location.href = '/Account/Index';
+                                });
+                            }
+                        }
+                    });
 
-        // Hàm xử lý sự kiện khi nhấp vào liên kết "Đăng nhập/Đăng ký"
-        document.getElementById('auth-link').addEventListener('click', async function (e) {
-            e.preventDefault();
+                document.addEventListener('DOMContentLoaded', function () {
+                    const dropdownToggle = document.querySelector('#userDropdown');
+                    const dropdownMenu = document.querySelector('#userDropdownMenu');
 
-          
-            // Hàm xử lý sự kiện khi nhấp vào liên kết "Đăng nhập/Đăng ký"
-            document.getElementById('auth-link').addEventListener('click', async function (e) {
-                e.preventDefault();
+                    if (dropdownToggle && dropdownMenu) {
+                        // Hiển thị dropdown khi di chuột vào
+                        dropdownToggle.addEventListener('mouseenter', function () {
+                            dropdownMenu.classList.add('show');
+                        });
 
-                // Kiểm tra trạng thái đăng nhập
-                const isAuthenticated = await checkLoginStatus();
+                        // Ẩn dropdown khi chuột rời khỏi
+                        dropdownToggle.addEventListener('mouseleave', function () {
+                            dropdownMenu.classList.remove('show');
+                        });
 
-                if (isAuthenticated) {
-                    // Nếu đã đăng nhập, hiển thị dropdown
-                    const dropdownToggle = document.querySelector('.dropdown-toggle');
-                    if (dropdownToggle) {
-                        dropdownToggle.click(); // Kích hoạt dropdown
+                        dropdownMenu.addEventListener('mouseleave', function () {
+                            dropdownMenu.classList.remove('show');
+                        });
+
+                        // Xử lý khi nhấp chuột vào dropdown để tránh redirect
+                        dropdownToggle.addEventListener('click', function (e) {
+                            e.preventDefault();
+                            dropdownMenu.classList.toggle('show');
+                        });
+
+                        // Đóng dropdown khi nhấp ra ngoài
+                        document.addEventListener('click', function (e) {
+                            if (!dropdownToggle.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                                dropdownMenu.classList.remove('show');
+                            }
+                        });
                     }
-                } else {
-                    // Nếu chưa đăng nhập, hiển thị form đăng nhập
-                    openAuthModal('login');
-                }
-            });
-
-        
-           
-            // Xử lý dropdown khi click
-            document.querySelector('.dropdown-toggle').addEventListener('click', function (e) {
-                e.preventDefault();
-                const dropdown = new bootstrap.Dropdown(this);
-                dropdown.toggle();
-            });
-
-            // Tự động đóng dropdown khi click ra ngoài
-            document.addEventListener('click', function (e) {
-                if (!e.target.closest('.dropdown')) {
-                    bootstrap.Dropdown.getInstance(document.querySelector('.dropdown-toggle'))?.hide();
-                }
-            });
-
+                });
 
     </script>
     @await RenderSectionAsync("Scripts", required: false)

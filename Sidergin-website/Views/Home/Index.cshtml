@@ -240,44 +240,38 @@
             }
         });
     
-// Fix for the auth-link click event
-document.addEventListener('DOMContentLoaded', function() {
-    // Get the auth link element
-    const authLink = document.querySelector('#auth-link a');
-    
-    if (authLink) {
-        // Remove any existing onclick attribute to avoid conflicts
-        authLink.removeAttribute('onclick');
-        
-        // Add event listener for the auth link
-        authLink.addEventListener('click', function(e) {
-            e.preventDefault();
-            // Redirect to the Authentication view
-            window.location.href = '/Account/Index';
+document.addEventListener('DOMContentLoaded', function () {
+    const dropdownToggle = document.querySelector('#userDropdown');
+    const dropdownMenu = document.querySelector('#userDropdownMenu');
+    const authLink = document.querySelector('#login-link');
+
+    if (dropdownToggle && dropdownMenu) {
+        // Xử lý khi nhấn vào dropdown
+        dropdownToggle.addEventListener('click', function (e) {
+            e.preventDefault(); // Ngăn chặn hành vi mặc định của thẻ <a>
+            e.stopPropagation(); // Ngăn chặn sự kiện lan ra ngoài
+
+            // Mở/đóng dropdown
+            dropdownMenu.classList.toggle('show');
         });
-    }
-    
-    // Handle dropdown toggle for authenticated users if needed
-    const dropdownToggle = document.querySelector('.dropdown-toggle');
-    if (dropdownToggle) {
-        dropdownToggle.addEventListener('click', function(e) {
-            e.preventDefault();
-            // Bootstrap 5 dropdown toggle
-            const dropdown = new bootstrap.Dropdown(this);
-            dropdown.toggle();
-        });
-        
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('.dropdown')) {
-                const dropdownInstance = bootstrap.Dropdown.getInstance(dropdownToggle);
-                if (dropdownInstance) {
-                    dropdownInstance.hide();
-                }
+
+        // Đóng dropdown khi nhấn bên ngoài
+        document.addEventListener('click', function (e) {
+            if (!dropdownToggle.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                dropdownMenu.classList.remove('show');
             }
         });
     }
+
+    // Chuyển hướng khi nhấn vào "Đăng nhập/Đăng ký"
+    if (authLink) {
+        authLink.addEventListener('click', function (e) {
+            e.preventDefault();
+            window.location.href = '/Account/Index';
+        });
+    }
 });
+
 
     </script>
 </body>

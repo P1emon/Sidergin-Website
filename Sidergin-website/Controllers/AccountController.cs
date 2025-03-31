@@ -33,27 +33,47 @@ namespace Sidergin_website.Controllers
             return View();
         }
         [HttpPost]
- 
+
         public async Task<IActionResult> Register(string email)
         {
+            // Kiểm tra email đã tồn tại chưa
             if (_context.Users.Any(u => u.Email == email))
             {
                 return Json(new { success = false, message = "Email đã tồn tại!" });
             }
 
+            // Tạo mật khẩu ngẫu nhiên và mã hóa
             string password = GenerateRandomPassword();
             string hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
 
+            // Tạo đối tượng người dùng mới
             var user = new User { Email = email, Password = hashedPassword };
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
 
+            try
+            {
+                // Lưu thông tin người dùng vào database
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                // Trả về thông báo lỗi nếu lưu thất bại
+                return Json(new { success = false, message = "Lỗi khi lưu thông tin người dùng: " + ex.Message });
+            }
+
+            // Gửi mật khẩu đến email
             bool emailSent = await SendPasswordToEmail(email, password);
             if (!emailSent)
             {
+                // Nếu gửi email thất bại, xóa thông tin người dùng đã lưu
+                _context.Users.Remove(user);
+                await _context.SaveChangesAsync();
+
+                // Trả về thông báo lỗi
                 return Json(new { success = false, message = "Gửi email thất bại!" });
             }
 
+            // Trả về kết quả thành công
             return Json(new { success = true });
         }
 
