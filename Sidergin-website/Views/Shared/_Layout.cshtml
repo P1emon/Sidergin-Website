@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Web_Sindergin.styles.css" asp-append-version="true" />
 </head>
+
 <body>
         <header>
         <div class="logo">
@@ -19,7 +20,28 @@
                 <li><a href="~/Home/News">Tin tức</a></li>
                 <li><a href="~/Home/Help">Trợ giúp</a></li>
                 <li><a href="~/Home/Contact">Liên hệ</a></li>
-                <li><a href="~/Account/Login">Đăng nhập/Đăng ký</a></li>
+                <li id="auth-link">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <div class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">
+                                Xin chào, @User.Identity.Name
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">Thông tin cá nhân</a></li>
+                                <li><a class="dropdown-item" href="javascript:void(0);" onclick="logout()">Đăng xuất</a></li>
+                            </ul>
+                        </div>
+                    }
+                    else
+                    {
+                        <a href="javascript:void(0);" onclick="openAuthModal()">Đăng nhập/Đăng ký</a>
+
+                    }
+
+                </li>
+
+
             </ul>
         </nav>
     </header>
@@ -61,9 +83,66 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script>
-        function openAuthModal(mode) {
-            alert("Mở modal đăng nhập/đăng ký: " + mode);
-        }
+    
+
+    
+
+        // Hàm xử lý sự kiện khi nhấp vào liên kết "Đăng nhập/Đăng ký"
+        document.getElementById('auth-link').addEventListener('click', async function (e) {
+            e.preventDefault();
+
+            // Hàm kiểm tra trạng thái đăng nhập
+            function checkLoginStatus() {
+                return fetch('/Account/CheckLoginStatus', {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => data.isAuthenticated)
+                    .catch(error => {
+                        console.error('Lỗi kiểm tra trạng thái đăng nhập:', error);
+                        return false;
+                    });
+            }
+
+            // Hàm xử lý sự kiện khi nhấp vào liên kết "Đăng nhập/Đăng ký"
+            document.getElementById('auth-link').addEventListener('click', async function (e) {
+                e.preventDefault();
+
+                // Kiểm tra trạng thái đăng nhập
+                const isAuthenticated = await checkLoginStatus();
+
+                if (isAuthenticated) {
+                    // Nếu đã đăng nhập, hiển thị dropdown
+                    const dropdownToggle = document.querySelector('.dropdown-toggle');
+                    if (dropdownToggle) {
+                        dropdownToggle.click(); // Kích hoạt dropdown
+                    }
+                } else {
+                    // Nếu chưa đăng nhập, hiển thị form đăng nhập
+                    openAuthModal('login');
+                }
+            });
+
+            function openAuthModal() {
+                document.getElementById('authIframe').src = "/Account/Index"; // Load trang đăng nhập/đăng ký vào iframe
+                var authModal = new bootstrap.Modal(document.getElementById('authModal')); // Khởi tạo Bootstrap Modal
+                authModal.show(); // Hiển thị modal
+            }
+
+            // Hàm đăng xuất (dùng Controller thông thường)
+            function logout() {
+                window.location.href = "/Account/Logout";
+            }
+
+
     </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
