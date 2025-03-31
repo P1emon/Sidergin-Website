@@ -84,48 +84,58 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Xử lý form đăng nhập
-        document.getElementById('loginForm').addEventListener('submit', function (e) {
-            e.preventDefault();
+       document.getElementById('loginForm').addEventListener('submit', function (e) {
+    e.preventDefault();
 
-            // Lấy giá trị từ form
-            var email = document.getElementById('loginEmail').value.trim();
-            var password = document.getElementById('loginPassword').value.trim();
-            var rememberMe = document.getElementById('rememberMe').checked;
+    // Lấy giá trị từ form
+    var email = document.getElementById('loginEmail').value.trim();
+    var password = document.getElementById('loginPassword').value.trim();
+    var rememberMe = document.getElementById('rememberMe').checked;
 
-            // Kiểm tra dữ liệu đầu vào
-            if (!email || !password) {
-                alert("Vui lòng nhập đầy đủ email và mật khẩu!");
-                return;
-            }
+    // Kiểm tra dữ liệu đầu vào
+    if (!email || !password) {
+        alert("Vui lòng nhập đầy đủ email và mật khẩu!");
+        return;
+    }
 
-            // Tạo FormData và thêm dữ liệu
-            var formData = new FormData();
-            formData.append('Email', email);
-            formData.append('Password', password);
-            formData.append('RememberMe', rememberMe);
+    // Tạo FormData và thêm dữ liệu
+    var formData = new FormData();
+    formData.append('Email', email);
+    formData.append('Password', password);
+    formData.append('RememberMe', rememberMe);
 
-            // Gửi yêu cầu POST đến controller
-            fetch('/Account/Login', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                if (response.redirected) {
-                    // Nếu có chuyển hướng, điều hướng đến trang chính
-                    window.location.href = response.url;
+    // Gửi yêu cầu POST đến controller
+    fetch('/Account/Login', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (response.redirected) {
+            // Nếu có chuyển hướng, điều hướng đến trang chính
+            window.location.href = response.url;
+        } else {
+            // Nếu không có chuyển hướng, phân tích phản hồi để xác định lỗi
+            return response.json().then(data => {
+                if (data.error) {
+                    // Hiển thị thông báo lỗi cụ thể
+                    if (data.error === "Email không tồn tại") {
+                        alert("Email không tồn tại! Vui lòng kiểm tra lại.");
+                    } else if (data.error === "Mật khẩu không chính xác") {
+                        alert("Mật khẩu không chính xác! Vui lòng kiểm tra lại.");
+                    } else {
+                        alert("Đăng nhập thất bại! Vui lòng kiểm tra lại.");
+                    }
                 } else {
-                    // Nếu không có chuyển hướng, hiển thị thông báo lỗi
-                    return response.text().then(text => {
-                        alert(text || "Đăng nhập thất bại! Vui lòng kiểm tra lại.");
-                    });
+                    alert("Đăng nhập thất bại! Vui lòng kiểm tra lại.");
                 }
-            })
-            .catch(error => {
-                console.error('Lỗi đăng nhập:', error);
-                alert("Đã xảy ra lỗi khi đăng nhập. Vui lòng thử lại!");
             });
-        });
+        }
+    })
+    .catch(error => {
+        console.error('Lỗi đăng nhập:', error);
+        alert("Đã xảy ra lỗi khi đăng nhập. Vui lòng thử lại!");
+    });
+});
 
         // Xử lý form đăng ký
         document.getElementById('registerForm').addEventListener('submit', function (e) {
