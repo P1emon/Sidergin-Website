@@ -8,6 +8,7 @@ using System;
 using System.Net.Mail;
 using System.Net;
 using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace Sidergin_website.ApiControllers
 {
@@ -32,9 +33,27 @@ namespace Sidergin_website.ApiControllers
                 return BadRequest(ModelState);
             }
 
+            // Get userId from authenticated user if available, otherwise use DTO value
+            int userId = orderDto.UserId;
+            if (User.Identity.IsAuthenticated)
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (!string.IsNullOrEmpty(userIdClaim) && int.TryParse(userIdClaim, out int authenticatedUserId))
+                {
+                    userId = authenticatedUserId;
+                }
+            }
+
+            // Validate userId exists
+            var userExists = await _context.Users.AnyAsync(u => u.UserId == userId);
+            if (!userExists)
+            {
+                return BadRequest(new { message = "User không tồn tại" });
+            }
+
             var order = new Order
             {
-                UserId = orderDto.UserId,
+                UserId = userId,
                 Quantity = orderDto.Quantity,
                 CurrentPrice = orderDto.CurrentPrice,
                 TotalAmount = orderDto.TotalAmount,
@@ -49,6 +68,7 @@ namespace Sidergin_website.ApiControllers
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
 
+            // Email sending logic remains the same
             string customerEmail = orderDto.UserEmail;
             string userName = orderDto.UserName ?? "Khách hàng";
             string phone = orderDto.UserPhone ?? "Không có số điện thoại";

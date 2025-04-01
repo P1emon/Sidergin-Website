@@ -108,8 +108,23 @@
                 return;
             }
 
+            // Lấy userId từ cookie hoặc API nếu đã đăng nhập
+            let userId = 1; // Default value
+            try {
+                const authResponse = await fetch('/Account/GetCurrentUserId', {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                if (authResponse.ok) {
+                    const authData = await authResponse.json();
+                    userId = authData.userId || 1;
+                }
+            } catch (error) {
+                console.log('User not logged in, using default userId');
+            }
+
             const orderData = {
-                userId: 1,
+                userId: userId,
                 quantity: quantity,
                 currentPrice: 400000,
                 totalAmount: quantity * 400000,
@@ -119,7 +134,6 @@
                 notes: customerAddress,
                 vnpayTransactionId: "demo",
                 orderDate: new Date().toISOString(),
-                // Thêm thông tin khách hàng vào orderData
                 userName: customerName,
                 userPhone: customerPhone,
                 userEmail: customerEmail

@@ -105,8 +105,12 @@ namespace Sidergin_website.Controllers
                     return View(model);
                 }
 
+                // Add userId to claims
                 var claims = new List<Claim>
         {
+
+            new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()), 
+
             new Claim(ClaimTypes.Email, user.Email),
             new Claim(ClaimTypes.Name, user.Email)
         };
@@ -114,7 +118,9 @@ namespace Sidergin_website.Controllers
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var authProperties = new AuthenticationProperties { IsPersistent = model.RememberMe };
 
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                    new ClaimsPrincipal(claimsIdentity),
+                    authProperties);
 
                 // Lưu session đăng nhập
                 HttpContext.Session.SetString("UserEmail", user.Email);
@@ -122,7 +128,6 @@ namespace Sidergin_website.Controllers
 
                 return RedirectToAction("Index", "Home");
             }
-
             return View(model);
         }
 
