@@ -90,7 +90,9 @@ public partial class AppDbContext : DbContext
 
             entity.ToTable("orders");
 
-            entity.Property(e => e.OrderId).HasColumnName("order_id");
+            entity.Property(e => e.OrderId).HasColumnName("order_id")
+            .ValueGeneratedOnAdd();
+
             entity.Property(e => e.CurrentPrice)
                 .HasColumnType("decimal(10, 2)")
                 .HasColumnName("current_price");
