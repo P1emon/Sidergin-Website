@@ -2,16 +2,23 @@
     ViewData["Title"] = "Đăng xuất thành công";
     Layout = "_Layout";
 }
-
+<link rel="stylesheet" href="~/css/logout.css">
 <div class="logout-container">
-    <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
-        <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
-        <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
-    </svg>
-    <h2>Bạn đã đăng xuất thành công</h2>
+    <div class="success-animation">
+        <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+            <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
+            <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+        </svg>
+    </div>
+    <h2 class="logout-title">Đăng xuất thành công!</h2>
+    <p class="logout-message">Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi</p>
     <div class="actions">
-        <a href="/" class="btn btn-primary">Trang chủ</a>
-        <a href="@Url.Action("Login","Account")" class="btn btn-secondary">Đăng nhập lại</a>
+        <a href="/" class="btn btn-home">
+            <i class="fas fa-home"></i> Trang chủ
+        </a>
+        <a href="@Url.Action("Index","Account")" class="btn btn-login">
+            <i class="fas fa-sign-in-alt"></i> Đăng nhập lại
+        </a>
     </div>
     <script>
         // Clear client-side cache
@@ -22,32 +29,8 @@
                 });
             });
         }
-
         // Force reload khi quay lại
         window.history.replaceState(null, null, window.location.href);
     </script>
 </div>
 
-<style>
-    .logout-container {
-        text-align: center;
-        padding: 40px 20px;
-    }
-
-    .checkmark {
-        width: 100px;
-        height: 100px;
-        margin: 0 auto 20px;
-    }
-
-    .checkmark__circle {
-        stroke: #4CAF50;
-        stroke-width: 2;
-    }
-
-    .checkmark__check {
-        stroke: #4CAF50;
-        stroke-width: 2;
-        stroke-linecap: round;
-    }
-</style>

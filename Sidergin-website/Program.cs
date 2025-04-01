@@ -32,6 +32,9 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.SlidingExpiration = true;
         options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
     });
+builder.Services.AddSession();
+builder.Services.AddDistributedMemoryCache(); // Cần thiết để sử dụng Session
+
 
 
 // Đăng ký DbContext với chuỗi kết nối từ appsettings.json

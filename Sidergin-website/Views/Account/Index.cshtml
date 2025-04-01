@@ -83,80 +83,162 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
-       document.getElementById('loginForm').addEventListener('submit', function (e) {
-    e.preventDefault();
+        document.getElementById('loginForm').addEventListener('submit', function (e) {
+            e.preventDefault();
 
-    // Lấy giá trị từ form
-    var email = document.getElementById('loginEmail').value.trim();
-    var password = document.getElementById('loginPassword').value.trim();
-    var rememberMe = document.getElementById('rememberMe').checked;
-
-    // Kiểm tra dữ liệu đầu vào
-    if (!email || !password) {
-        alert("Vui lòng nhập đầy đủ email và mật khẩu!");
-        return;
-    }
-
-    // Tạo FormData và thêm dữ liệu
-    var formData = new FormData();
-    formData.append('Email', email);
-    formData.append('Password', password);
-    formData.append('RememberMe', rememberMe);
-
-    // Gửi yêu cầu POST đến controller
-    fetch('/Account/Login', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => {
-        if (response.redirected) {
-            // Nếu có chuyển hướng, điều hướng đến trang chính
-            window.location.href = response.url;
-        } else {
-            // Nếu không có chuyển hướng, phân tích phản hồi để xác định lỗi
-            return response.json().then(data => {
-                if (data.error) {
-                    // Hiển thị thông báo lỗi cụ thể
-                    if (data.error === "Email không tồn tại") {
-                        alert("Email không tồn tại! Vui lòng kiểm tra lại.");
-                    } else if (data.error === "Mật khẩu không chính xác") {
-                        alert("Mật khẩu không chính xác! Vui lòng kiểm tra lại.");
-                    } else {
-                        alert("Đăng nhập thất bại! Vui lòng kiểm tra lại.");
-                    }
-                } else {
-                    alert("Đăng nhập thất bại! Vui lòng kiểm tra lại.");
+            // Hiển thị thông báo "Đang đăng nhập..."
+            Swal.fire({
+                title: 'Đang đăng nhập...',
+                text: 'Vui lòng đợi trong giây lát.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading(); // Hiển thị hiệu ứng loading
                 }
             });
-        }
-    })
-    .catch(error => {
-        console.error('Lỗi đăng nhập:', error);
-        alert("Đã xảy ra lỗi khi đăng nhập. Vui lòng thử lại!");
-    });
-});
 
-        // Xử lý form đăng ký
+            // Lấy giá trị từ form
+            var email = document.getElementById('loginEmail').value.trim();
+            var password = document.getElementById('loginPassword').value.trim();
+            var rememberMe = document.getElementById('rememberMe').checked;
+
+            // Kiểm tra dữ liệu đầu vào
+            if (!email || !password) {
+                Swal.close(); // Đóng thông báo "Đang đăng nhập..."
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: 'Vui lòng nhập đầy đủ email và mật khẩu!',
+                });
+                return;
+            }
+
+            // Tạo FormData và thêm dữ liệu
+            var formData = new FormData();
+            formData.append('Email', email);
+            formData.append('Password', password);
+            formData.append('RememberMe', rememberMe);
+
+            // Gửi yêu cầu POST đến controller
+            fetch('/Account/Login', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => {
+                    Swal.close(); // Đóng thông báo "Đang đăng nhập..."
+
+                    if (response.redirected) {
+                        // Nếu có chuyển hướng, điều hướng đến trang chính
+                        window.location.href = response.url;
+                    } else {
+                        // Nếu không có chuyển hướng, phân tích phản hồi để xác định lỗi
+                        return response.json().then(data => {
+                            if (data.error) {
+                                // Hiển thị thông báo lỗi cụ thể
+                                if (data.error === "Email không tồn tại") {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Lỗi',
+                                        text: 'Email không tồn tại! Vui lòng kiểm tra lại.',
+                                    });
+                                } else if (data.error === "Mật khẩu không chính xác") {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Lỗi',
+                                        text: 'Mật khẩu không chính xác! Vui lòng kiểm tra lại.',
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Lỗi',
+                                        text: 'Đăng nhập thất bại! Vui lòng kiểm tra lại.',
+                                    });
+                                }
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Lỗi',
+                                    text: 'Đăng nhập thất bại! Vui lòng kiểm tra lại.',
+                                });
+                            }
+                        });
+                    }
+                })
+                .catch(error => {
+                    Swal.close(); // Đóng thông báo "Đang đăng nhập..."
+                    console.error('Lỗi đăng nhập:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi',
+                        text: 'Đã xảy ra lỗi khi đăng nhập. Vui lòng thử lại!',
+                    });
+                });
+        });
+
+
         document.getElementById('registerForm').addEventListener('submit', function (e) {
             e.preventDefault();
 
-            var formData = new FormData(this); // Lấy dữ liệu từ form
+            // Hiển thị thông báo "Đang xử lý..."
+            Swal.fire({
+                title: 'Đang xử lý...',
+                text: 'Vui lòng đợi trong giây lát.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading(); // Hiển thị hiệu ứng loading
+                }
+            });
 
+            // Lấy dữ liệu từ form
+            var formData = new FormData(this);
+
+            // Gửi yêu cầu POST đến server
             fetch('/Account/Register', {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.text())
-            .then(data => {
-                alert('Đăng ký thành công! Vui lòng kiểm tra email để nhận mật khẩu');
-                window.location.href = "/Account/Index"; // Chuyển hướng đến trang đăng nhập
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Đã xảy ra lỗi khi đăng ký. Vui lòng thử lại.');
-            });
+                .then(response => response.json()) // Đọc phản hồi JSON
+                .then(data => {
+                    // Đóng thông báo "Đang xử lý..."
+                    Swal.close();
+
+                    // Kiểm tra kết quả từ server
+                    if (data.success) {
+                        // Hiển thị thông báo thành công
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Thành công',
+                            text: 'Đăng ký thành công! Vui lòng kiểm tra email để nhận mật khẩu.',
+                        }).then(() => {
+                            window.location.href = "/Account/Index"; // Chuyển hướng đến trang đăng nhập
+                        });
+                    } else {
+                        // Hiển thị thông báo lỗi từ server
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi',
+                            text: data.message || 'Đã xảy ra lỗi khi đăng ký. Vui lòng thử lại.',
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+
+                    // Đóng thông báo "Đang xử lý..."
+                    Swal.close();
+
+                    // Hiển thị thông báo lỗi
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi',
+                        text: 'Đã xảy ra lỗi khi đăng ký. Vui lòng thử lại.',
+                    });
+                });
         });
+
+
     </script>
 </body>
 </html>
