@@ -17,7 +17,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Sidergin_website.Controllers
 {
-   
+
     public class AccountController : Controller
     {
         private readonly AppDbContext _context;
@@ -193,7 +193,63 @@ namespace Sidergin_website.Controllers
             var random = new Random();
             return new string(Enumerable.Repeat(chars, 8).Select(s => s[random.Next(s.Length)]).ToArray());
         }
+        [HttpGet]
+        public async Task<IActionResult> Edit()
+        {
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
+            if (userEmail == null) return RedirectToAction("Login");
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
+            if (user == null) return NotFound();
+
+            return View(user);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(User model, string CurrentPassword, string NewPassword, string ConfirmNewPassword)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await _context.Users.FindAsync(model.UserId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            // Cập nhật thông tin cá nhân
+            user.Name = model.Name;
+            user.Phone = model.Phone;
+            user.Address = model.Address;
+            user.UpdatedAt = DateTime.Now;
+
+            // Kiểm tra và đổi mật khẩu nếu nhập mật khẩu mới
+            if (!string.IsNullOrEmpty(CurrentPassword) && !string.IsNullOrEmpty(NewPassword))
+            {
+                if (!BCrypt.Net.BCrypt.Verify(CurrentPassword, user.Password))
+                {
+                    ViewData["ErrorMessage"] = "Mật khẩu hiện tại không đúng!";
+                    return View(model);
+                }
+
+                if (NewPassword != ConfirmNewPassword)
+                {
+                    ViewData["ErrorMessage"] = "Mật khẩu mới và xác nhận mật khẩu không khớp!";
+                    return View(model);
+                }
+
+                user.Password = BCrypt.Net.BCrypt.HashPassword(NewPassword);
+            }
+
+            await _context.SaveChangesAsync();
+            ViewData["Message"] = "Cập nhật thành công!";
+            return View(model);
+        }
+
+
     }
 }
 
-    
+

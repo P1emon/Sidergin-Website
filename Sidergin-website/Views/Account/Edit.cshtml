@@ -1,0 +1,77 @@
+﻿@model Sidergin_website.Models.User
+
+@{
+    ViewData["Title"] = "Chỉnh sửa thông tin cá nhân";
+}
+
+<h2 class="text-center">Chỉnh sửa thông tin</h2>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form asp-action="Edit" method="post">
+                <input type="hidden" asp-for="UserId" />
+
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label">Email</label>
+                    <input asp-for="Email" class="form-control" readonly />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label">Tên</label>
+                    <input asp-for="Name" class="form-control" required />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Phone" class="form-label">Số điện thoại</label>
+                    <input asp-for="Phone" class="form-control" required />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Address" class="form-label">Địa chỉ</label>
+                    <input asp-for="Address" class="form-control" />
+                </div>
+
+                <h4>Đổi mật khẩu</h4>
+                <div class="mb-3">
+                    <label class="form-label">Mật khẩu hiện tại</label>
+                    <input type="password" name="CurrentPassword" class="form-control" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Mật khẩu mới</label>
+                    <input type="password" name="NewPassword" id="NewPassword" class="form-control" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Xác nhận mật khẩu mới</label>
+                    <input type="password" name="ConfirmNewPassword" id="ConfirmNewPassword" class="form-control" required />
+                </div>
+
+                <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                <a asp-action="Profile" class="btn btn-secondary">Hủy</a>
+            </form>
+
+            @if (ViewData["Message"] != null)
+            {
+                        <div class="alert alert-success mt-3">@ViewData["Message"]</div>
+            }
+            @if (ViewData["ErrorMessage"] != null)
+            {
+                        <div class="alert alert-danger mt-3">@ViewData["ErrorMessage"]</div>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelector("form").addEventListener("submit", function (event) {
+        var newPassword = document.getElementById("NewPassword").value;
+        var confirmNewPassword = document.getElementById("ConfirmNewPassword").value;
+
+        if (newPassword !== confirmNewPassword) {
+            event.preventDefault();
+            alert("Mật khẩu mới và xác nhận mật khẩu không khớp!");
+        }
+    });
+</script>
