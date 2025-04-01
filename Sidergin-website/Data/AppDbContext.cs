@@ -18,7 +18,7 @@ public partial class AppDbContext : DbContext
     //public DbSet<Faq> Faqs { get; set; }
     public virtual DbSet<Contact> Contacts { get; set; }
 
-    public virtual DbSet<Fqa> Fqas { get; set; }
+    public virtual DbSet<Faq> Faqs { get; set; }
 
     public virtual DbSet<Order> Orders { get; set; }
 
@@ -26,7 +26,7 @@ public partial class AppDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=ACERNITRO5\ACERSERVER;Initial Catalog=Sidergin_Website;Integrated Security=True;Encrypt=True;Trust Server Certificate=True");
+        => optionsBuilder.UseSqlServer("Data Source=LAPTOP-QBAUIQJE\\PIEMON;Initial Catalog=Sidergin_Website;Integrated Security=True;Encrypt=True;Trust Server Certificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -65,13 +65,13 @@ public partial class AppDbContext : DbContext
                 .HasColumnName("zalo");
         });
 
-        modelBuilder.Entity<Fqa>(entity =>
+        modelBuilder.Entity<Faq>(entity =>
         {
-            entity.HasKey(e => e.FqaId).HasName("PK__fqa__2FAB6E125DC366C2");
+            entity.HasKey(e => e.FaqId).HasName("PK__fqa__2FAB6E125DC366C2");
 
-            entity.ToTable("fqa");
+            entity.ToTable("faqs");
 
-            entity.Property(e => e.FqaId).HasColumnName("fqa_id");
+            entity.Property(e => e.FaqId).HasColumnName("faq_id");
             entity.Property(e => e.Answer)
                 .HasMaxLength(2000)
                 .HasColumnName("answer");

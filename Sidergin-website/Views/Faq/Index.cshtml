@@ -1,4 +1,4 @@
-﻿@model List<Fqa>
+﻿@model List<Faq>
 
 <!DOCTYPE html>
 <html lang="vi">
@@ -47,11 +47,11 @@
                 @foreach (var faq in Model)
                 {
                     <div class="faq-item">
-                        <div class="faq-question" onclick="toggleAnswer(@faq.FqaId)">
+                        <div class="faq-question" onclick="toggleAnswer(@faq.FaqId)">
                             @faq.Question
-                            <span id="arrow-@faq.FqaId">▼</span>
+                            <span id="arrow-@faq.FaqId">▼</span>
                         </div>
-                        <div class="faq-answer" id="answer-@faq.FqaId">
+                        <div class="faq-answer" id="answer-@faq.FaqId">
                             @faq.Answer
                         </div>
                     </div>
