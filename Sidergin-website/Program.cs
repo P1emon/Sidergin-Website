@@ -40,6 +40,9 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
             await Task.CompletedTask;
         };
     });
+builder.Services.AddSession();
+builder.Services.AddDistributedMemoryCache(); // Cần thiết để sử dụng Session
+
 
 // Register DbContext with connection string from appsettings.json
 builder.Services.AddDbContext<AppDbContext>(options =>
