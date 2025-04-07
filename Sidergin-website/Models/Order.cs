@@ -27,5 +27,7 @@ public partial class Order
 
     public DateTime? OrderDate { get; set; }
 
+    public DateTime? DeliveryDate { get; set; }
+
     public virtual User User { get; set; } = null!;
 }

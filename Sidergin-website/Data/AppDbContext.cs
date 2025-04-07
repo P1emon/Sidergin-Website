@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Sidergin_website.Models;
@@ -26,7 +26,7 @@ public partial class AppDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=LAPTOP-QBAUIQJE\\PIEMON;Initial Catalog=Sidergin_Website;Integrated Security=True;Encrypt=True;Trust Server Certificate=True");
+        => optionsBuilder.UseSqlServer("Data Source=ACERNITRO5\\ACERSERVER;Initial Catalog=Sidergin_Website;Integrated Security=True;Encrypt=True;Trust Server Certificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -91,7 +91,7 @@ public partial class AppDbContext : DbContext
             entity.ToTable("orders");
 
             entity.Property(e => e.OrderId).HasColumnName("order_id")
-            .ValueGeneratedOnAdd();
+                .ValueGeneratedOnAdd();
 
             entity.Property(e => e.CurrentPrice)
                 .HasColumnType("decimal(10, 2)")
@@ -127,6 +127,10 @@ public partial class AppDbContext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("vnpay_transaction_id");
+            entity.Property(e => e.DeliveryDate) // Thêm cột mới
+             .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("delivery_date");
 
             entity.HasOne(d => d.User).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.UserId)
@@ -147,8 +151,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.UserId).HasColumnName("user_id");
             entity.Property(e => e.Address)
                 .HasMaxLength(500)
-                .IsUnicode(false)
-                .HasColumnName("address");
+                .HasColumnName("address"); // Đổi sang nvarchar
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime")
@@ -167,15 +170,13 @@ public partial class AppDbContext : DbContext
                 .HasColumnName("phone");
             entity.Property(e => e.Name)
                 .HasMaxLength(20)
-                .IsUnicode(false)
                 .HasDefaultValue("customer")
-                .HasColumnName("name");
+                .HasColumnName("name"); // Đổi sang nvarchar
             entity.Property(e => e.UpdatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime")
                 .HasColumnName("updated_at");
         });
-
         OnModelCreatingPartial(modelBuilder);
     }
 

@@ -12,8 +12,8 @@ using Sidergin_website.Data;
 namespace Sidergin_website.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250331072434_UpdateUserTable")]
-    partial class UpdateUserTable
+    [Migration("20250407092559_AddDeliveryDateAndUpdateUserColumns")]
+    partial class AddDeliveryDateAndUpdateUserColumns
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,39 @@ namespace Sidergin_website.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Faq", b =>
+                {
+                    b.Property<int>("FaqId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("faq_id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FaqId"));
+
+                    b.Property<string>("Answer")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)")
+                        .HasColumnName("answer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<string>("Question")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)")
+                        .HasColumnName("question");
+
+                    b.HasKey("FaqId")
+                        .HasName("PK__fqa__2FAB6E125DC366C2");
+
+                    b.ToTable("faqs", (string)null);
+                });
 
             modelBuilder.Entity("Sidergin_website.Models.Contact", b =>
                 {
@@ -82,39 +115,6 @@ namespace Sidergin_website.Migrations
                     b.ToTable("contacts", (string)null);
                 });
 
-            modelBuilder.Entity("Sidergin_website.Models.Fqa", b =>
-                {
-                    b.Property<int>("FqaId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("fqa_id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FqaId"));
-
-                    b.Property<string>("Answer")
-                        .IsRequired()
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)")
-                        .HasColumnName("answer");
-
-                    b.Property<DateTime?>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasColumnName("created_at")
-                        .HasDefaultValueSql("(getdate())");
-
-                    b.Property<string>("Question")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)")
-                        .HasColumnName("question");
-
-                    b.HasKey("FqaId")
-                        .HasName("PK__fqa__2FAB6E125DC366C2");
-
-                    b.ToTable("fqa", (string)null);
-                });
-
             modelBuilder.Entity("Sidergin_website.Models.Order", b =>
                 {
                     b.Property<int>("OrderId")
@@ -127,6 +127,12 @@ namespace Sidergin_website.Migrations
                     b.Property<decimal>("CurrentPrice")
                         .HasColumnType("decimal(10, 2)")
                         .HasColumnName("current_price");
+
+                    b.Property<DateTime?>("DeliveryDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("delivery_date")
+                        .HasDefaultValueSql("(getdate())");
 
                     b.Property<string>("Notes")
                         .HasMaxLength(500)
@@ -200,8 +206,7 @@ namespace Sidergin_website.Migrations
 
                     b.Property<string>("Address")
                         .HasMaxLength(500)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(500)")
+                        .HasColumnType("nvarchar(500)")
                         .HasColumnName("address");
 
                     b.Property<DateTime?>("CreatedAt")
@@ -218,9 +223,10 @@ namespace Sidergin_website.Migrations
                         .HasColumnName("email");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(100)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(100)")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasDefaultValue("customer")
                         .HasColumnName("name");
 
                     b.Property<string>("Password")
@@ -246,6 +252,10 @@ namespace Sidergin_website.Migrations
 
                     b.HasIndex(new[] { "Email" }, "UQ__users__AB6E6164FB2EF0E0")
                         .IsUnique();
+
+                    b.HasIndex(new[] { "Phone" }, "UQ__users__B43B145F73D87F91")
+                        .IsUnique()
+                        .HasFilter("[phone] IS NOT NULL");
 
                     b.ToTable("users", (string)null);
                 });
