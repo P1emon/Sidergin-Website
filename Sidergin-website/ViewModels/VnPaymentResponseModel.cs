@@ -12,4 +12,10 @@
         public string VnPayResponseCode { get; set; }
 
     }
+    public class VnPaymentRequestModel
+    {
+        public string FullName { get; set; }
+        public string Description { get; set; }
+        public string Amount { get; set; }
+    }
 }
