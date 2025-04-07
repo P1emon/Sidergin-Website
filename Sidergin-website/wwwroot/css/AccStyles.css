@@ -1,0 +1,323 @@
+﻿body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 100%;
+    background: linear-gradient(135deg, #6e5ff8 0%, #9271f8 50%, #7d4de3 100%);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+.welcome-container {
+    text-align: center;
+    max-width: 900px; /* Increased from 800px */
+    padding: 30px; /* Increased from 20px */
+}
+
+.welcome-title {
+    font-size: 3rem; /* Increased from 2.5rem */
+    font-weight: 700;
+    margin-bottom: 1.8rem; /* Increased from 1.5rem */
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.welcome-subtitle {
+    font-size: 1.3rem; /* Increased from 1.1rem */
+    margin-bottom: 3rem; /* Increased from 2.5rem */
+    opacity: 0.9;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 25px; /* Increased from 20px */
+    justify-content: center;
+    margin-top: 30px; /* Increased from 20px */
+}
+
+.btn-auth {
+    padding: 15px 35px; /* Increased from 12px 30px */
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1.2rem; /* Increased from 1rem */
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Slightly increased shadow */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 180px; /* Increased from 150px */
+}
+
+.btn-login {
+    background-color: white;
+    color: #6e5ff8;
+    border: none;
+}
+
+    .btn-login:hover {
+        background-color: #f8f9fa;
+        transform: translateY(-3px);
+        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18); /* Increased shadow */
+    }
+
+.btn-register {
+    background-color: transparent;
+    color: white;
+    border: 2px solid white;
+}
+
+    .btn-register:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        transform: translateY(-3px);
+        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18); /* Increased shadow */
+    }
+
+.btn-icon {
+    margin-right: 10px; /* Increased from 8px */
+    font-size: 1.2rem; /* Added font size for icons */
+}
+
+/* Form Styles */
+.modal-dialog {
+    max-width: 500px; /* Increased from Bootstrap default */
+}
+
+.modal-content {
+    border-radius: 18px; /* Increased from 15px */
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25); /* Increased shadow */
+    border: none;
+}
+
+.modal-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    background-color: #f8f9fa;
+    border-radius: 18px 18px 0 0; /* Match modal-content radius */
+    padding: 16px 25px; /* Increased padding */
+}
+
+    .modal-header .modal-title {
+        color: #333;
+        font-weight: 600;
+        font-size: 1.4rem; /* Increased font size */
+    }
+
+.modal-body {
+    padding: 30px; /* Increased from 25px */
+    color: #333;
+}
+
+.form-control {
+    padding: 14px 18px; /* Increased from 12px 15px */
+    border-radius: 10px; /* Increased from 8px */
+    border: 1px solid #e0e0e0;
+    margin-bottom: 20px; /* Increased from 15px */
+    transition: all 0.3s;
+    color: #333;
+    font-size: 1.1rem; /* Increased font size */
+}
+
+    .form-control:focus {
+        box-shadow: 0 0 0 4px rgba(110, 95, 248, 0.25); /* Increased from 3px */
+        border-color: #6e5ff8;
+    }
+
+.form-label {
+    color: #333;
+    font-weight: 500;
+    margin-bottom: 8px; /* Increased from 5px */
+    font-size: 1.1rem; /* Increased font size */
+}
+
+.form-text {
+    color: #666;
+    font-size: 0.95rem; /* Increased font size */
+    margin-top: 5px;
+}
+
+.btn-submit {
+    background: linear-gradient(135deg, #6e5ff8 0%, #7d4de3 100%);
+    border: none;
+    border-radius: 50px;
+    padding: 15px 25px; /* Increased from 12px 20px */
+    font-weight: 600;
+    width: 100%;
+    margin-top: 25px; /* Increased from 15px */
+    color: white;
+    transition: all 0.3s;
+    font-size: 1.2rem; /* Increased font size */
+}
+
+    .btn-submit:hover {
+        opacity: 0.9;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.18); /* Increased shadow */
+    }
+
+.form-check-input {
+    width: 18px; /* Increased checkbox size */
+    height: 18px; /* Increased checkbox size */
+}
+
+    .form-check-input:checked {
+        background-color: #6e5ff8;
+        border-color: #6e5ff8;
+    }
+
+.modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.7); /* Darkened backdrop */
+}
+
+.text-primary {
+    color: #6e5ff8 !important;
+}
+
+.form-check-label {
+    margin-bottom: 0;
+    color: #333;
+    font-size: 1rem; /* Increased font size */
+    padding-left: 5px; /* Added padding */
+}
+
+/* Hiệu chỉnh cho link quên mật khẩu */
+.modal-body a {
+    color: #6e5ff8;
+    font-size: 1rem; /* Increased font size */
+    font-weight: 500;
+}
+
+    .modal-body a:hover {
+        color: #7d4de3;
+        text-decoration: underline !important;
+    }
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    .welcome-title {
+        font-size: 2.2rem; /* Increased from 1.8rem */
+    }
+
+    .welcome-subtitle {
+        font-size: 1.1rem;
+    }
+
+    .auth-buttons {
+        flex-direction: column;
+        gap: 18px; /* Increased from 15px */
+    }
+
+    .btn-auth {
+        width: 100%;
+        padding: 14px 20px;
+    }
+
+    .modal-body {
+        padding: 20px;
+    }
+}
+
+/* CSS cho Modal Quên Mật Khẩu */
+#forgotPasswordModal .modal-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    background-color: #f8f9fa;
+    border-radius: 18px 18px 0 0;
+    padding: 16px 25px;
+}
+
+#forgotPasswordModal .modal-title {
+    color: #333;
+    font-weight: 600;
+    font-size: 1.4rem;
+}
+
+#forgotPasswordModal .modal-body {
+    padding: 30px;
+    color: #333;
+}
+
+#forgotPasswordModal .form-control {
+    padding: 14px 18px;
+    border-radius: 10px;
+    border: 1px solid #e0e0e0;
+    margin-bottom: 20px;
+    transition: all 0.3s;
+    color: #333;
+    font-size: 1.1rem;
+}
+
+    #forgotPasswordModal .form-control:focus {
+        box-shadow: 0 0 0 4px rgba(110, 95, 248, 0.25);
+        border-color: #6e5ff8;
+    }
+
+#forgotPasswordModal .form-label {
+    color: #333;
+    font-weight: 500;
+    margin-bottom: 8px;
+    font-size: 1.1rem;
+}
+
+#forgotPasswordModal .btn-primary {
+    background: linear-gradient(135deg, #6e5ff8 0%, #7d4de3 100%);
+    border: none;
+    border-radius: 50px;
+    padding: 15px 25px;
+    font-weight: 600;
+    width: 100%;
+    margin-top: 15px;
+    color: white;
+    transition: all 0.3s;
+    font-size: 1.2rem;
+}
+
+    #forgotPasswordModal .btn-primary:hover {
+        opacity: 0.9;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.18);
+    }
+
+#forgotPasswordModal .btn-close {
+    opacity: 0.7;
+    transition: all 0.3s;
+}
+
+    #forgotPasswordModal .btn-close:hover {
+        opacity: 1;
+    }
+
+/* Hiệu ứng cho modal */
+#forgotPasswordModal .modal-content {
+    transform: scale(0.95);
+    opacity: 0;
+    transition: all 0.3s ease;
+    border-radius: 18px;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+    border: none;
+}
+
+#forgotPasswordModal.show .modal-content {
+    transform: scale(1);
+    opacity: 1;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+    #forgotPasswordModal .modal-body {
+        padding: 20px;
+    }
+
+    #forgotPasswordModal .modal-title {
+        font-size: 1.2rem;
+    }
+
+    #forgotPasswordModal .form-control {
+        padding: 12px 15px;
+        font-size: 1rem;
+    }
+
+    #forgotPasswordModal .btn-primary {
+        padding: 12px 20px;
+        font-size: 1.1rem;
+    }
+}

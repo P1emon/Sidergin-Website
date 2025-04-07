@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Sidergin_website.Data;
 using Sidergin_website.DTO;
 using Sidergin_website.Models;
@@ -18,12 +19,13 @@ namespace Sidergin_website.ApiControllers
     {
         private readonly AppDbContext _context;
         private readonly IConfiguration _configuration;
-        private object orderDateFormatted;
+        private readonly ILogger<OrderApiController> _logger;
 
-        public OrderApiController(AppDbContext context, IConfiguration configuration)
+        public OrderApiController(AppDbContext context, IConfiguration configuration, ILogger<OrderApiController> logger)
         {
             _context = context;
             _configuration = configuration;
+            _logger = logger;
         }
 
         [HttpPost("create")]
@@ -34,8 +36,25 @@ namespace Sidergin_website.ApiControllers
                 return BadRequest(ModelState);
             }
 
-            // Get userId from authenticated user if available, otherwise use DTO value
-            int userId = orderDto.UserId;
+            // Kiểm tra các trường bắt buộc
+            if (orderDto.Quantity <= 0)
+            {
+                return BadRequest(new { message = "Số lượng phải lớn hơn 0" });
+            }
+
+            if (orderDto.CurrentPrice <= 0)
+            {
+                return BadRequest(new { message = "Giá sản phẩm không hợp lệ" });
+            }
+
+            if (string.IsNullOrEmpty(orderDto.PaymentMethod))
+            {
+                return BadRequest(new { message = "Vui lòng chọn phương thức thanh toán" });
+            }
+
+            // Xử lý UserId
+            int userId = 0;
+
             if (User.Identity.IsAuthenticated)
             {
                 var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -44,45 +63,99 @@ namespace Sidergin_website.ApiControllers
                     userId = authenticatedUserId;
                 }
             }
-
-            // Validate userId exists
-            var userExists = await _context.Users.AnyAsync(u => u.UserId == userId);
-            if (!userExists)
+            else if (orderDto.UserId > 0)
             {
-                return BadRequest(new { message = "User không tồn tại" });
+                userId = orderDto.UserId;
+            }
+            else
+            {
+                return BadRequest(new { message = "Không thể xác định người dùng" });
             }
 
+            // Kiểm tra UserId tồn tại
+            try
+            {
+                var userExists = await _context.Users.AnyAsync(u => u.UserId == userId);
+                if (!userExists)
+                {
+                    return BadRequest(new { message = "Người dùng không tồn tại" });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi khi kiểm tra người dùng");
+                return StatusCode(500, new { message = "Lỗi khi kiểm tra thông tin người dùng" });
+            }
+
+            // Xử lý ngày tháng để tránh lỗi SqlDateTime overflow
+            DateTime minSqlDate = new DateTime(1753, 1, 1); // Giá trị tối thiểu SQL Server hỗ trợ
+            DateTime orderDate = orderDto.OrderDate == default || orderDto.OrderDate < minSqlDate
+                ? DateTime.UtcNow
+                : orderDto.OrderDate;
+
+            DateTime? deliveryDate = orderDto.DeliveryDate.HasValue && orderDto.DeliveryDate >= minSqlDate
+                ? orderDto.DeliveryDate
+                : null; // DeliveryDate có thể null nếu không được cung cấp
+
+            // Tạo đơn hàng
             var order = new Order
             {
                 UserId = userId,
                 Quantity = orderDto.Quantity,
                 CurrentPrice = orderDto.CurrentPrice,
-                TotalAmount = orderDto.TotalAmount,
+                TotalAmount = orderDto.Quantity * orderDto.CurrentPrice,
                 PaymentMethod = orderDto.PaymentMethod,
-                PaymentStatus = orderDto.PaymentStatus,
-                OrderStatus = orderDto.OrderStatus,
+                PaymentStatus = string.IsNullOrEmpty(orderDto.PaymentStatus) ? "Chờ thanh toán" : orderDto.PaymentStatus,
+                OrderStatus = string.IsNullOrEmpty(orderDto.OrderStatus) ? "Mới đặt" : orderDto.OrderStatus,
                 Notes = orderDto.Notes,
                 VnpayTransactionId = orderDto.VnpayTransactionId,
-                OrderDate = orderDto.OrderDate
+                OrderDate = orderDate, // Sử dụng giá trị đã xử lý
+                DeliveryDate = deliveryDate // Sử dụng giá trị đã xử lý
             };
 
-            _context.Orders.Add(order);
-            await _context.SaveChangesAsync();
-
-            // Email sending logic remains the same
-            string customerEmail = orderDto.UserEmail;
-            string userName = orderDto.UserName ?? "Khách hàng";
-            string phone = orderDto.UserPhone ?? "Không có số điện thoại";
-            string adminEmail = "phannguyendangkhoa0915@gmail.com";
-
-            if (!string.IsNullOrEmpty(customerEmail))
+            // Lưu đơn hàng vào database
+            try
             {
-                Task.Run(() => SendCustomerEmail(customerEmail, order, phone, userName));
+                _context.Orders.Add(order);
+                await _context.SaveChangesAsync();
+                _logger.LogInformation($"Đã tạo đơn hàng thành công: OrderId={order.OrderId}");
+            }
+            catch (DbUpdateException ex)
+            {
+                _logger.LogError(ex, "Lỗi khi lưu đơn hàng vào cơ sở dữ liệu");
+                return StatusCode(500, new { message = "Lỗi khi lưu đơn hàng", error = ex.InnerException?.Message ?? ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi không xác định khi lưu đơn hàng");
+                return StatusCode(500, new { message = "Có lỗi xảy ra khi lưu đơn hàng", error = ex.Message });
             }
 
-            Task.Run(() => SendAdminEmail(adminEmail, order, phone, userName, customerEmail));
+            // Gửi email xác nhận
+            try
+            {
+                string customerEmail = orderDto.UserEmail;
+                string userName = orderDto.UserName ?? "Khách hàng";
+                string phone = orderDto.UserPhone ?? "Không có số điện thoại";
+                string adminEmail = _configuration["EmailSettings:AdminEmail"] ?? "phannguyendangkhoa0915@gmail.com";
 
-            return Ok(new { message = "Đơn hàng đã được tạo thành công! Nhân viên sẽ sớm liên hệ với bạn." });
+                if (!string.IsNullOrEmpty(customerEmail))
+                {
+                    await SendCustomerEmail(customerEmail, order, phone, userName);
+                }
+
+                await SendAdminEmail(adminEmail, order, phone, userName, customerEmail);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi khi gửi email xác nhận");
+            }
+
+            return Ok(new
+            {
+                message = "Đơn hàng đã được tạo thành công! Nhân viên sẽ sớm liên hệ với bạn.",
+                orderId = order.OrderId
+            });
         }
 
         private async Task SendCustomerEmail(string email, Order order, string phone, string userName)
@@ -96,14 +169,15 @@ namespace Sidergin_website.ApiControllers
                 string senderEmail = _configuration["EmailSettings:SenderEmail"];
                 string senderPassword = _configuration["EmailSettings:SenderPassword"];
 
-                // Format ngày đặt hàng theo định dạng Việt Nam
+                // Format ngày đặt hàng an toàn
                 string orderDateFormatted = order.OrderDate.HasValue
                     ? order.OrderDate.Value.ToString("dd/MM/yyyy HH:mm")
-                    : "N/A";  // If orderDate is null, use a default value like "N/A"
+                    : "Chưa xác định";
 
-
-                // Format tổng tiền
-                string formattedAmount = string.Format("{0:N0} VNĐ", order.TotalAmount);
+                // Format tổng tiền an toàn
+                string formattedAmount = order.TotalAmount.HasValue
+                    ? string.Format("{0:N0} VNĐ", order.TotalAmount.Value)
+                    : "Đang cập nhật";
 
                 using var smtpClient = new SmtpClient(smtpServer)
                 {
@@ -219,7 +293,7 @@ namespace Sidergin_website.ApiControllers
                             <p><strong>📦 Số lượng:</strong> {order.Quantity}</p>
                             <p><strong>💰 Tổng tiền:</strong> <span class='highlight'>{formattedAmount}</span></p>
                             <p><strong>💳 Phương thức thanh toán:</strong> {order.PaymentMethod}</p>
-                            <p><strong>📌 Trạng thái đơn hàng:</strong> {order.OrderStatus}</p>
+                            <p><strong>📌 Trạng thái đơn hàng:</strong> {(string.IsNullOrEmpty(order.OrderStatus) ? "Mới đặt" : order.OrderStatus)}</p>
                             {(!string.IsNullOrEmpty(order.Notes) ? $"<p><strong>📝 Ghi chú:</strong> {order.Notes}</p>" : "")}
                         </div>
                     </div>
@@ -254,10 +328,12 @@ namespace Sidergin_website.ApiControllers
                 mailMessage.To.Add(email);
 
                 await smtpClient.SendMailAsync(mailMessage);
+                _logger.LogInformation($"Đã gửi email xác nhận cho khách hàng: {email}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Lỗi gửi email khách hàng: {ex.Message}");
+                _logger.LogError(ex, $"Lỗi gửi email khách hàng: {email}");
+                throw;
             }
         }
 
@@ -279,20 +355,25 @@ namespace Sidergin_website.ApiControllers
                     EnableSsl = true,
                 };
 
-                string subject = "Thông báo đơn hàng mới";
+                // Format tổng tiền an toàn
+                string formattedAmount = order.TotalAmount.HasValue
+                    ? string.Format("{0:N0} VNĐ", order.TotalAmount.Value)
+                    : "Đang cập nhật";
+
+                string subject = "Thông báo đơn hàng mới #" + order.OrderId;
                 string body = $@"<h2>📢 Thông báo đơn hàng mới</h2>
                                 <p>Xin chào Admin,</p>
                                 <p>Một đơn hàng mới vừa được tạo.</p>
                                 <hr>
                                 <p><strong>🛒 Mã đơn hàng:</strong> {order.OrderId}</p>
                                 <p><strong>👤 Khách hàng:</strong> {userName}</p>
-                                <p><strong>📧 Email khách hàng:</strong> {customerEmail}</p>
+                                <p><strong>📧 Email khách hàng:</strong> {customerEmail ?? "Không có"}</p>
                                 <p><strong>📞 Số điện thoại:</strong> {phone}</p>
                                 <p><strong>📦 Số lượng:</strong> {order.Quantity}</p>
-                                <p><strong>💰 Tổng tiền:</strong> {order.TotalAmount:C}</p>
+                                <p><strong>💰 Tổng tiền:</strong> {formattedAmount}</p>
                                 <p><strong>💳 Phương thức thanh toán:</strong> {order.PaymentMethod}</p>
-                                <p><strong>📌 Trạng thái đơn hàng:</strong> {order.OrderStatus}</p>
-                                <p><strong>📝 Ghi chú từ khách hàng:</strong> {order.Notes}</p>
+                                <p><strong>📌 Trạng thái đơn hàng:</strong> {(string.IsNullOrEmpty(order.OrderStatus) ? "Mới đặt" : order.OrderStatus)}</p>
+                                <p><strong>📝 Ghi chú từ khách hàng:</strong> {(string.IsNullOrEmpty(order.Notes) ? "Không có" : order.Notes)}</p>
                                 <hr>
                                 <p>📞 Hãy liên hệ với khách hàng sớm nhất.</p>
                                 <p>Trân trọng,</p>
@@ -308,10 +389,12 @@ namespace Sidergin_website.ApiControllers
                 mailMessage.To.Add(email);
 
                 await smtpClient.SendMailAsync(mailMessage);
+                _logger.LogInformation($"Đã gửi email thông báo đơn hàng mới tới admin: {email}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Lỗi gửi email admin: {ex.Message}");
+                _logger.LogError(ex, $"Lỗi gửi email admin: {email}");
+                throw;
             }
         }
     }
