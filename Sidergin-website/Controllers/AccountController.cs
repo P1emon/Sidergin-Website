@@ -389,6 +389,183 @@ namespace Sidergin_website.Controllers
         }
 
 
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(string email)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if (user == null)
+            {
+                return Json(new { success = false, message = "Email không tồn tại!" });
+            }
+
+            // Tạo mật khẩu mới
+            string newPassword = GenerateRandomPassword();
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(newPassword);
+
+            user.Password = hashedPassword;
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+
+            // Gửi mật khẩu mới đến email
+            bool emailSent = await SendResetPassword(email, newPassword);
+            if (!emailSent)
+            {
+                return Json(new { success = false, message = "Không thể gửi email. Vui lòng thử lại." });
+            }
+
+            return Json(new { success = true, message = "Mật khẩu mới đã được gửi đến email của bạn." });
+        }
+        private async Task<bool> SendResetPassword(string email, string password)
+        {
+            try
+            {
+                var smtpSettings = _configuration.GetSection("EmailSettings");
+                var message = new MimeMessage();
+                message.From.Add(new MailboxAddress("Nhà Thuốc", smtpSettings["SenderEmail"]));
+                message.To.Add(new MailboxAddress(email, email));
+                message.Subject = "Yêu cầu đặt lại mật khẩu - Nhà Thuốc";
+
+                // Create HTML body with updated formatting for password reset
+                var builder = new BodyBuilder();
+
+                // HTML version of the email
+                builder.HtmlBody = $@"
+ <!DOCTYPE html>
+ <html lang='vi'>
+ <head>
+     <meta charset='UTF-8'>
+     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+     <title>Yêu cầu đặt lại mật khẩu</title>
+     <style>
+         body {{
+             font-family: 'Segoe UI', Arial, sans-serif;
+             line-height: 1.6;
+             color: #333333;
+             margin: 0;
+             padding: 0;
+         }}
+         .container {{
+             max-width: 600px;
+             margin: 0 auto;
+             padding: 20px;
+             background-color: #ffffff;
+         }}
+         .header {{
+             background: linear-gradient(135deg, #6e5ff8 0%, #7d4de3 100%);
+             color: white;
+             padding: 20px;
+             text-align: center;
+             border-radius: 5px 5px 0 0;
+         }}
+         .content {{
+             padding: 20px;
+             border: 1px solid #e0e0e0;
+             border-top: none;
+             border-radius: 0 0 5px 5px;
+         }}
+         .password-box {{
+             background-color: #f5f5f5;
+             padding: 15px;
+             margin: 20px 0;
+             border-radius: 5px;
+             border-left: 4px solid #6e5ff8;
+             font-size: 16px;
+         }}
+         .button {{
+             display: inline-block;
+             background: linear-gradient(135deg, #6e5ff8 0%, #7d4de3 100%);
+             color: white;
+             text-decoration: none;
+             padding: 12px 25px;
+             border-radius: 50px;
+             margin-top: 15px;
+             font-weight: bold;
+         }}
+         .footer {{
+             margin-top: 20px;
+             text-align: center;
+             font-size: 12px;
+             color: #666666;
+         }}
+         .warning {{
+             color: #e74c3c;
+             font-size: 13px;
+             margin-top: 10px;
+         }}
+     </style>
+ </head>
+ <body>
+     <div class='container'>
+         <div class='header'>
+             <h1>Đặt Lại Mật Khẩu</h1>
+         </div>
+         <div class='content'>
+             <p>Kính gửi Quý khách,</p>
+             <p>Chúng tôi đã nhận được yêu cầu đặt lại mật khẩu cho tài khoản của bạn. Dưới đây là mật khẩu mới của bạn:</p>
+             
+             <p><strong>Email:</strong> {email}</p>
+             <div class='password-box'>
+                 <strong>Mật khẩu mới:</strong> {password}
+             </div>
+             
+             <p>Vui lòng sử dụng mật khẩu này để đăng nhập vào tài khoản của bạn. Sau khi đăng nhập, chúng tôi khuyên bạn nên thay đổi mật khẩu để đảm bảo an toàn.</p>
+             
+             <p>Để đăng nhập ngay bây giờ, vui lòng nhấp vào nút bên dưới:</p>
+             
+             <div style='text-align: center;'>
+                 <a href='{_configuration["ApplicationUrl"]}/Account/Login' class='button'>Đăng Nhập</a>
+             </div>
+             
+             <p class='warning'>Lưu ý: Đây là email tự động. Vui lòng không trả lời email này.</p>
+         </div>
+         <div class='footer'>
+             <p>&copy; {DateTime.Now.Year} Nhà Thuốc. Tất cả các quyền đã được bảo lưu.</p>
+             <p>Địa chỉ: {_configuration["CompanyInfo:Address"] ?? "123 Đường Nguyễn Văn Linh, Quận 7, TP.HCM"}</p>
+             <p>Hotline: {_configuration["CompanyInfo:Phone"] ?? "1900 1234"}</p>
+         </div>
+     </div>
+ </body>
+ </html>";
+
+                // Plain text version as fallback
+                builder.TextBody = $@"
+ YÊU CẦU ĐẶT LẠI MẬT KHẨU - NHÀ THUỐC
+ 
+ Kính gửi Quý khách,
+ 
+ Chúng tôi đã nhận được yêu cầu đặt lại mật khẩu cho tài khoản của bạn. Dưới đây là mật khẩu mới của bạn:
+ 
+ Email: {email}
+ Mật khẩu mới: {password}
+ 
+ Vui lòng sử dụng mật khẩu này để đăng nhập vào tài khoản của bạn. Sau khi đăng nhập, chúng tôi khuyên bạn nên thay đổi mật khẩu để đảm bảo an toàn.
+ 
+ Để đăng nhập, vui lòng truy cập: {_configuration["ApplicationUrl"]}/Account/Login
+ 
+ Lưu ý: Đây là email tự động. Vui lòng không trả lời email này.
+ 
+ © {DateTime.Now.Year} Nhà Thuốc. Tất cả các quyền đã được bảo lưu.
+ Địa chỉ: {_configuration["CompanyInfo:Address"] ?? "123 Đường Nguyễn Văn Linh, Quận 7, TP.HCM"}
+ Hotline: {_configuration["CompanyInfo:Phone"] ?? "1900 1234"}";
+
+                message.Body = builder.ToMessageBody();
+
+                using var client = new MailKit.Net.Smtp.SmtpClient();
+                await client.ConnectAsync(smtpSettings["SmtpServer"], int.Parse(smtpSettings["SmtpPort"]), SecureSocketOptions.StartTls);
+                await client.AuthenticateAsync(smtpSettings["SenderEmail"], smtpSettings["SenderPassword"]);
+                await client.SendAsync(message);
+                await client.DisconnectAsync(true);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi gửi email: {ex.Message}");
+                return false;
+            }
+        }
+
+
+
     }
 }
 

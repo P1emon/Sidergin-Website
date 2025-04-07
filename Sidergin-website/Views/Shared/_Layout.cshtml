@@ -28,7 +28,8 @@
                                 Xin chào, @User.Identity.Name
                             </a>
                             <ul class="dropdown-menu" id="userDropdownMenu">
-                                <li><a class="dropdown-item" href="#">Thông tin cá nhân</a></li>
+                                <li><a class="dropdown-item" asp-controller="Account" asp-action="Edit">Thông tin cá nhân</a></li>
+
                                 <li>
                                     <form asp-controller="Account" asp-action="Logout" method="post" id="logoutForm">
                                         @Html.AntiForgeryToken()

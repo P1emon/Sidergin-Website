@@ -1,77 +1,122 @@
 ﻿@model Sidergin_website.Models.User
-
 @{
     ViewData["Title"] = "Chỉnh sửa thông tin cá nhân";
 }
+<link rel="stylesheet" href="~/css/edit.css">
+<meta charset="UTF-8">
 
-<h2 class="text-center">Chỉnh sửa thông tin</h2>
-
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <form asp-action="Edit" method="post">
-                <input type="hidden" asp-for="UserId" />
-
-                <div class="mb-3">
-                    <label asp-for="Email" class="form-label">Email</label>
-                    <input asp-for="Email" class="form-control" readonly />
+<div class="user-edit-container">
+    <div class="edit-header">
+        <h2>Chỉnh sửa thông tin cá nhân</h2>
+        <p class="subtitle">Cập nhật thông tin của bạn dưới đây</p>
+    </div>
+    
+    <div class="form-container">
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="UserId" />
+            
+            <div class="form-section">
+                <h3 class="section-title">Thông tin cơ bản</h3>
+                
+                <div class="form-floating">
+                    <input asp-for="Email" class="form-control" id="floatingEmail" placeholder=" " readonly />
+                    <label asp-for="Email" for="floatingEmail">Email</label>
                 </div>
-
-                <div class="mb-3">
-                    <label asp-for="Name" class="form-label">Tên</label>
-                    <input asp-for="Name" class="form-control" required />
+                
+                <div class="form-floating">
+                    <input asp-for="Name" class="form-control" id="floatingName" placeholder=" " required />
+                    <label asp-for="Name" for="floatingName">Tên</label>
                 </div>
-
-                <div class="mb-3">
-                    <label asp-for="Phone" class="form-label">Số điện thoại</label>
-                    <input asp-for="Phone" class="form-control" required />
+                
+                <div class="form-floating">
+                    <input asp-for="Phone" class="form-control" id="floatingPhone" placeholder=" " required />
+                    <label asp-for="Phone" for="floatingPhone">Số điện thoại</label>
                 </div>
-
-                <div class="mb-3">
-                    <label asp-for="Address" class="form-label">Địa chỉ</label>
-                    <input asp-for="Address" class="form-control" />
+                
+                <div class="form-floating">
+                    <input asp-for="Address" class="form-control" id="floatingAddress" placeholder=" " />
+                    <label asp-for="Address" for="floatingAddress">Địa chỉ</label>
                 </div>
-
-                <h4>Đổi mật khẩu</h4>
-                <div class="mb-3">
-                    <label class="form-label">Mật khẩu hiện tại</label>
-                    <input type="password" name="CurrentPassword" class="form-control" required />
+            </div>
+            
+            <div class="form-section password-section">
+                <h3 class="section-title">Đổi mật khẩu</h3>
+                
+                <div class="form-floating">
+                    <input type="password" name="CurrentPassword" id="floatingCurrentPassword" class="form-control" placeholder=" " required />
+                    <label for="floatingCurrentPassword">Mật khẩu hiện tại</label>
                 </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Mật khẩu mới</label>
-                    <input type="password" name="NewPassword" id="NewPassword" class="form-control" required />
+                
+                <div class="form-floating">
+                    <input type="password" name="NewPassword" id="NewPassword" class="form-control" placeholder=" " required />
+                    <label for="NewPassword">Mật khẩu mới</label>
                 </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Xác nhận mật khẩu mới</label>
-                    <input type="password" name="ConfirmNewPassword" id="ConfirmNewPassword" class="form-control" required />
+                
+                <div class="form-floating">
+                    <input type="password" name="ConfirmNewPassword" id="ConfirmNewPassword" class="form-control" placeholder=" " required />
+                    <label for="ConfirmNewPassword">Xác nhận mật khẩu mới</label>
                 </div>
-
+            </div>
+            
+            <div class="form-actions">
                 <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
-                <a asp-action="Profile" class="btn btn-secondary">Hủy</a>
-            </form>
+                <a asp-controller="Home" asp-action="Index" class="btn btn-outline">Hủy</a>
+            </div>
+        </form>
 
-            @if (ViewData["Message"] != null)
-            {
-                        <div class="alert alert-success mt-3">@ViewData["Message"]</div>
-            }
-            @if (ViewData["ErrorMessage"] != null)
-            {
-                        <div class="alert alert-danger mt-3">@ViewData["ErrorMessage"]</div>
-            }
-        </div>
+        @if (ViewData["Message"] != null)
+        {
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle alert-icon"></i>
+                @ViewData["Message"]
+            </div>
+
+            <script>
+                // Tự động chuyển hướng về trang chủ sau 3 giây
+                setTimeout(function () {
+                    window.location.href = '@Url.Action("Index", "Home")';
+                }, 3000);
+            </script>
+        }
+
     </div>
 </div>
+
+
 
 <script>
     document.querySelector("form").addEventListener("submit", function (event) {
         var newPassword = document.getElementById("NewPassword").value;
         var confirmNewPassword = document.getElementById("ConfirmNewPassword").value;
-
+        
         if (newPassword !== confirmNewPassword) {
             event.preventDefault();
-            alert("Mật khẩu mới và xác nhận mật khẩu không khớp!");
+            
+            // Tạo thông báo lỗi
+            var errorDiv = document.createElement('div');
+            errorDiv.className = 'alert alert-danger';
+            errorDiv.innerHTML = '<i class="fas fa-exclamation-circle alert-icon"></i> Mật khẩu mới và xác nhận mật khẩu không khớp!';
+            
+            // Xóa thông báo lỗi cũ nếu có
+            var oldErrors = document.querySelectorAll('.alert-danger');
+            oldErrors.forEach(function(error) {
+                error.remove();
+            });
+            
+            // Thêm thông báo lỗi mới
+            document.querySelector('.form-container').appendChild(errorDiv);
+            
+            // Cuộn đến thông báo lỗi
+            errorDiv.scrollIntoView({ behavior: 'smooth' });
         }
+    });
+    
+    // Đảm bảo các trường dữ liệu hiện có sẽ có style phù hợp khi trang được tải
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.form-control').forEach(function(input) {
+            if (input.value !== '') {
+                input.classList.add('filled');
+            }
+        });
     });
 </script>

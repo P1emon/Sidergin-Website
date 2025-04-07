@@ -51,7 +51,8 @@
                                 <input type="checkbox" class="form-check-input" id="rememberMe" name="rememberMe">
                                 <label class="form-check-label" for="rememberMe">Ghi nhớ đăng nhập</label>
                             </div>
-                            <a href="#" class="text-primary text-decoration-none">Quên mật khẩu?</a>
+                            <a href="#" class="text-primary text-decoration-none" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">Quên mật khẩu?</a>
+
                         </div>
                         <button type="submit" class="btn btn-submit">Đăng nhập</button>
                     </form>
@@ -59,6 +60,32 @@
             </div>
         </div>
     </div>
+
+ <!-- Modal Quên Mật Khẩu -->
+<div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Quên mật khẩu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="forgotPasswordForm" method="post" action="/Account/ForgotPassword">
+                    <div class="mb-3">
+                        <label for="forgotEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="forgotEmail" name="email" required placeholder="Nhập email đã đăng ký">
+                        <div class="form-text">Chúng tôi sẽ gửi hướng dẫn đặt lại mật khẩu đến email của bạn.</div>
+                    </div>
+                    <button type="submit" class="btn btn-submit">Gửi lại mật khẩu</button>
+                </form>
+                <div class="text-center mt-3">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal" data-bs-dismiss="modal">Quay lại đăng nhập</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
     <!-- Modal đăng ký -->
     <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
@@ -177,6 +204,62 @@
                 });
         });
 
+     // Quên mật khẩu
+document.getElementById('forgotPasswordForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const form = e.target;
+
+    // Hiển thị thông báo "Đang xử lý..."
+    const processingAlert = Swal.fire({
+        title: 'Đang xử lý...',
+        text: 'Vui lòng đợi trong giây lát.',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading(); // Hiển thị hiệu ứng loading
+        }
+    });
+
+    // Gửi yêu cầu POST đến server để xử lý quên mật khẩu
+    fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form)
+    })
+    .then(res => res.json())
+    .then(data => {
+        // Đóng thông báo "Đang xử lý..."
+        Swal.close();
+
+        // Nếu thành công, hiển thị thông báo và quay lại trang đăng nhập
+        if (data.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành công',
+                text: 'Mật khẩu mới đã được gửi vào email của bạn. Vui lòng kiểm tra email để thay đổi mật khẩu.',
+            }).then(() => {
+                window.location.href = "/Account/Index"; // Chuyển hướng về trang đăng nhập
+            });
+        } else {
+            // Nếu có lỗi, hiển thị thông báo lỗi
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: data.message || 'Đã xảy ra lỗi khi gửi email. Vui lòng thử lại.',
+            });
+        }
+    })
+    .catch(error => {
+        // Đóng thông báo "Đang xử lý..."
+        Swal.close();
+
+        // Hiển thị thông báo lỗi nếu có lỗi xảy ra
+        console.error('Error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Lỗi',
+            text: 'Đã xảy ra lỗi khi gửi yêu cầu. Vui lòng thử lại.',
+        });
+    });
+});
 
         document.getElementById('registerForm').addEventListener('submit', function (e) {
             e.preventDefault();
@@ -237,7 +320,6 @@
                     });
                 });
         });
-
 
     </script>
 </body>
