@@ -22,7 +22,7 @@
         <nav>
             <ul>
                 <li><a href="/">Giới thiệu</a></li>
-                <li><a href="#">Tin tức</a></li>
+                <li><a href="~/News">Tin tức</a></li>
                 <li><a href="~/Faq/Index">Trợ giúp</a></li>
                 <li><a href="~/Home/Contact">Liên hệ</a></li>
                 <li id="auth-link">
@@ -59,33 +59,259 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="footer-content">
-            <div class="company-info">
-                <h3>Nhà phân phối Thuốc Việt số 1</h3>
-                <p>Địa chỉ: 123 Đường Số 1, Quận 1, TP. Hồ Chí Minh</p>
-                <p>Mã số: .................................</p>
-                <p>Điện thoại: 0123456789</p>
-                <p>Zalo: 0123456789</p>
-                <p>Email: <a href="mailto:admin123@gmail.com">admin123@gmail.com</a></p>
-            </div>
-            <div class="footer-links">
-                <h3>Chính sách hỗ trợ</h3>
-                <ul>
-                    <li><a href="#">Chính sách mua hàng</a></li>
-                    <li><a href="#">Phương thức thanh toán</a></li>
-                    <li><a href="#">Chính sách vận chuyển</a></li>
-                    <li><a href="#">Chính sách đổi trả hàng</a></li>
-                    <li><a href="#">Bảo mật thông tin khách hàng</a></li>
-                    <li><a href="#">Chính sách bảo vệ dữ liệu chung</a></li>
-                    <li><a href="#">Điều khoản dịch vụ</a></li>
-                </ul>
+    <footer class="site-footer">
+        <div class="footer-wave">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 100">
+                <path fill="#1A5F7A" fill-opacity="1" d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,100L1360,100C1280,100,1120,100,960,100C800,100,640,100,480,100C320,100,160,100,80,100L0,100Z"></path>
+            </svg>
+        </div>
+
+        <div class="footer-wrapper">
+            <div class="footer-content">
+                <div class="brand-column">
+                    <div class="footer-logo">
+                        <h2><span class="highlight">S</span>IDERGIN</h2>
+                    </div>
+                    <p class="brand-description">Chúng tôi cung cấp các sản phẩm bổ sung sắt và vitamin chất lượng cao, giúp cải thiện sức khỏe và tăng cường hệ miễn dịch.</p>
+                    <div class="social-icons">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                        <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-content">
+                    <div class="company-info">
+                        <h3><span class="highlight">S</span>IDERGIN - Nhà phân phối Thuốc Việt số 1</h3>
+
+                        <div class="contact-grid">
+                            <!-- Cột thông tin liên hệ chính -->
+                            <div class="contact-column">
+                                <p><i class="fas fa-map-marker-alt"></i> 123 Đường Số 1, Quận 1, TP. Hồ Chí Minh</p>
+                                <p><i class="fas fa-id-card"></i> Mã số: .................................</p>
+                                <p><i class="fas fa-phone"></i> Điện thoại: <a href="tel:0123456789">0123456789</a></p>
+                            </div>
+
+                            <!-- Cột thông tin liên hệ phụ -->
+                            <div class="contact-column">
+                                <p><i class="fab fa-whatsapp"></i> Zalo: <a href="https://zalo.me/0123456789">0123456789</a></p>
+                                <p><i class="fas fa-envelope"></i> Email: <a href="mailto:admin123@gmail.com">admin123@gmail.com</a></p>
+                                <p><i class="far fa-clock"></i> Thứ 2 - Thứ 6: 8:00 - 17:30</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="footer-links">
+                        <h3>Chính sách hỗ trợ</h3>
+                        <ul>
+                            <li><a href="#"><i class="fas fa-angle-right"></i> Chính sách mua hàng</a></li>
+                            <li><a href="#"><i class="fas fa-angle-right"></i> Phương thức thanh toán</a></li>
+                            <li><a href="#"><i class="fas fa-angle-right"></i> Chính sách vận chuyển</a></li>
+                            <li><a href="#"><i class="fas fa-angle-right"></i> Chính sách đổi trả hàng</a></li>
+                            <li><a href="#"><i class="fas fa-angle-right"></i> Bảo mật thông tin khách hàng</a></li>
+                            <li><a href="#"><i class="fas fa-angle-right"></i> Chính sách bảo vệ dữ liệu chung</a></li>
+                            <li><a href="#"><i class="fas fa-angle-right"></i> Điều khoản dịch vụ</a></li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="container text-center mt-4">
-            &copy; 2025 - Web_Sindergin - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+
+        <div class="footer-bottom">
+            <p>&copy; 2025 SIDERGIN - Nhà phân phối Thuốc Việt số 1. Tất cả quyền được bảo lưu.</p>
+            <a href="/privacy">Chính sách bảo mật</a>
         </div>
     </footer>
+
+    <style>
+        .footer-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+            .footer-logo .highlight {
+                color: #FFC107; /* màu vàng/cam giống header */
+            }
+
+        .footer-logo {
+            color: #ffffff; /* màu trắng giống phần còn lại của chữ ở header */
+        }
+
+        /* Thêm vào file CSS của bạn */
+        footer {
+            background-color: #2C3E50; /* Giữ nguyên màu nền */
+        }
+
+            footer p, footer li, footer a {
+                color: #ffffff !important; /* Chuyển từ màu xám sang trắng */
+                opacity: 0.9; /* Độ trong suốt nhẹ để vẫn hài hòa */
+            }
+
+            footer h3, footer .highlight {
+                color: #FF7F50 !important; /* Tăng độ sáng cho tiêu đề */
+                font-weight: 600;
+            }
+
+            footer a:hover {
+                color: #FFC107 !important; /* Màu vàng khi hover */
+                opacity: 1;
+            }
+
+        .site-footer {
+            background-color: #f8f9fa;
+            color: #495057;
+            font-family: 'Poppins', sans-serif;
+            position: relative;
+            margin-top: 3rem;
+            overflow: hidden;
+        }
+
+        .footer-wave {
+            position: absolute;
+            top: -100px;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            line-height: 0;
+        }
+
+        .footer-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 1rem 2rem;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .brand-column, .info-column, .policy-column {
+            flex: 1 1 250px;
+        }
+
+        .footer-logo h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #1A5F7A;
+        }
+
+        .footer-logo .highlight {
+            color: #FF7F50;
+        }
+
+        .brand-description {
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+            .social-icons a {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 38px;
+                height: 38px;
+                border-radius: 50%;
+                background-color: #1A5F7A;
+                color: white;
+                transition: all 0.3s ease;
+            }
+
+                .social-icons a:hover {
+                    background-color: #FF7F50;
+                    transform: translateY(-3px);
+                }
+
+        .footer-content h3 {
+            color: #1A5F7A;
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+            .footer-content h3::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 40px;
+                height: 3px;
+                background-color: #FF7F50;
+            }
+
+        .contact-info, .footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+            .contact-info li {
+                margin-bottom: 1rem;
+                display: flex;
+                align-items: flex-start;
+            }
+
+            .contact-info i {
+                color: #FF7F50;
+                margin-right: 10px;
+                width: 20px;
+                margin-top: 4px;
+            }
+
+            .footer-links li {
+                margin-bottom: 0.8rem;
+            }
+
+            .footer-links a {
+                color: #495057;
+                text-decoration: none;
+                transition: color 0.3s;
+                display: flex;
+                align-items: center;
+            }
+
+                .footer-links a i {
+                    color: #FF7F50;
+                    margin-right: 8px;
+                    font-size: 0.8rem;
+                }
+
+                .footer-links a:hover {
+                    color: #FF7F50;
+                }
+
+        .footer-bottom {
+            background-color: #1A5F7A;
+            color: white;
+            padding: 1.5rem 1rem;
+            text-align: center;
+        }
+
+            .footer-bottom p {
+                margin: 0 0 0.5rem 0;
+            }
+
+            .footer-bottom a {
+                color: #FFC107;
+                text-decoration: none;
+            }
+
+                .footer-bottom a:hover {
+                    text-decoration: underline;
+                }
+    </style>
+
+
 
     <!-- Modal đăng nhập/đăng ký -->
     <div class="modal fade" id="auth-modal" tabindex="-1" aria-hidden="true">

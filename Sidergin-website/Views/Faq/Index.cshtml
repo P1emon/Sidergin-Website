@@ -5,59 +5,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FAQ</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <style>
-        .faq-container { width: 60%; margin: auto; }
-        .faq-item { border-bottom: 1px solid #ddd; padding: 10px 0; }
-        .faq-question { font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; }
-        .faq-answer { display: none; padding-top: 5px; }
-    </style>
-</head>
-<body>
-
-
-
-
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trợ giúp - SIDERGIN Compresse</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="~/css/Faq.css">
 </head>
 <body>
-
-
     <main class="help-container">
         <section class="help-hero">
             <h1>Trợ giúp & Hỗ trợ</h1>
             <p>Chúng tôi ở đây để giúp bạn! Tìm câu trả lời cho các câu hỏi thường gặp hoặc liên hệ với chúng tôi để được hỗ trợ thêm.</p>
         </section>
-        @*câu hỏi lấy dữ liệu từ database*@
+
         <section class="faq-section">
             <div class="faq-container">
                 <h2>Câu hỏi thường gặp</h2>
 
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-box" id="faqSearch" placeholder="Tìm kiếm câu hỏi...">
+                </div>
+
+                <div class="faq-categories">
+                    <div class="category-pill active" data-category="all">Tất cả</div>
+                    <div class="category-pill" data-category="product">Sản phẩm</div>
+                    <div class="category-pill" data-category="order">Đơn hàng</div>
+                    <div class="category-pill" data-category="shipping">Vận chuyển</div>
+                    <div class="category-pill" data-category="payment">Thanh toán</div>
+                </div>
+
                 @foreach (var faq in Model)
                 {
-                    <div class="faq-item">
+                    <div class="faq-item" data-category="all">
                         <div class="faq-question" onclick="toggleAnswer(@faq.FaqId)">
                             @faq.Question
-                            <span id="arrow-@faq.FaqId">▼</span>
+                            <span id="arrow-@faq.FaqId"><i class="fas fa-chevron-down"></i></span>
                         </div>
                         <div class="faq-answer" id="answer-@faq.FaqId">
-                            @faq.Answer
+                            @Html.Raw(faq.Answer)
                         </div>
                     </div>
                 }
             </div>
         </section>
+
         <section class="contact-section">
             <h2>Liên hệ với chúng tôi</h2>
             <p>Nếu bạn cần thêm thông tin hoặc hỗ trợ, đừng ngần ngại liên hệ với chúng tôi!</p>
@@ -66,14 +58,16 @@
                     <i class="fas fa-phone-alt"></i>
                     <div>
                         <h4>Điện thoại</h4>
-                        <p>0123456789</p>
+                        <p><a href="tel:0123456789">0123 456 789</a></p>
+                        <p>Thời gian: 8:00 - 17:30 (Thứ 2 - Thứ 6)</p>
                     </div>
                 </div>
                 <div class="contact-item">
-                    <i class="fas fa-comment-alt"></i>
+                    <i class="fab fa-whatsapp"></i>
                     <div>
                         <h4>Zalo</h4>
-                        <p>0123456789</p>
+                        <p><a href="https://zalo.me/0123456789">0123 456 789</a></p>
+                        <p>Hỗ trợ nhanh qua Zalo</p>
                     </div>
                 </div>
                 <div class="contact-item">
@@ -81,29 +75,101 @@
                     <div>
                         <h4>Email</h4>
                         <p><a href="mailto:admin123@gmail.com">admin123@gmail.com</a></p>
+                        <p>Phản hồi trong vòng 24 giờ</p>
                     </div>
                 </div>
+            </div>
+
+            <div class="support-banner">
+                <div class="support-banner-text">
+                    <h3>Bạn vẫn còn câu hỏi?</h3>
+                    <p>Gửi yêu cầu hỗ trợ hoặc chat trực tiếp với chúng tôi để được giải đáp nhanh chóng</p>
+                </div>
+                <a href="/Home/Contact" class="support-btn">Gửi yêu cầu hỗ trợ</a>
             </div>
         </section>
     </main>
 
-
-
     <script>
-        // Xử lý mở/đóng FAQ
-        document.querySelectorAll('.faq-question').forEach(item => {
-            item.addEventListener('click', () => {
-                const answer = item.nextElementSibling;
-                const isOpen = answer.style.display === 'block';
+        function toggleAnswer(id) {
+            const answer = document.getElementById('answer-' + id);
+            const arrow = document.getElementById('arrow-' + id).querySelector('i');
 
-                // Đóng tất cả các câu trả lời khác
-                document.querySelectorAll('.faq-answer').forEach(ans => {
-                    ans.style.display = 'none';
-                });
-
-                // Mở/đóng câu trả lời hiện tại
-                answer.style.display = isOpen ? 'none' : 'block';
+            // Đóng tất cả các câu trả lời khác
+            document.querySelectorAll('.faq-answer').forEach(item => {
+                if (item.id !== 'answer-' + id) {
+                    item.classList.remove('active');
+                }
             });
+
+            // Đặt lại tất cả các mũi tên
+            document.querySelectorAll('.faq-question span i').forEach(item => {
+                if (item !== arrow) {
+                    item.classList.remove('rotate');
+                }
+            });
+
+            // Mở/đóng câu trả lời hiện tại
+            answer.classList.toggle('active');
+            arrow.classList.toggle('rotate');
+        }
+
+        // Tìm kiếm FAQ
+        document.getElementById('faqSearch').addEventListener('keyup', function() {
+            const searchTerm = this.value.toLowerCase();
+            document.querySelectorAll('.faq-item').forEach(item => {
+                const question = item.querySelector('.faq-question').textContent.toLowerCase();
+                const answer = item.querySelector('.faq-answer').textContent.toLowerCase();
+
+                if (question.includes(searchTerm) || answer.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+        // Lọc theo danh mục (giả lập)
+        document.querySelectorAll('.category-pill').forEach(pill => {
+            pill.addEventListener('click', function() {
+                const category = this.getAttribute('data-category');
+
+                // Đặt trạng thái active cho danh mục
+                document.querySelectorAll('.category-pill').forEach(p => {
+                    p.classList.remove('active');
+                });
+                this.classList.add('active');
+
+                // Hiện tất cả câu hỏi vì chúng ta không có category thực sự
+                if (category === 'all') {
+                    document.querySelectorAll('.faq-item').forEach(item => {
+                        item.style.display = 'block';
+                    });
+                } else {
+                    // Gắn một số câu hỏi vào mỗi danh mục (phân phối đều)
+                    const items = document.querySelectorAll('.faq-item');
+                    items.forEach((item, index) => {
+                        const categories = ['product', 'order', 'shipping', 'payment'];
+                        const catIndex = index % categories.length;
+
+                        if (categories[catIndex] === category) {
+                            item.style.display = 'block';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                }
+            });
+        });
+
+        // Mở câu hỏi đầu tiên khi trang tải xong
+        document.addEventListener('DOMContentLoaded', function() {
+            if (document.querySelectorAll('.faq-item').length > 0) {
+                const firstQuestion = document.querySelector('.faq-question');
+                if (firstQuestion) {
+                    firstQuestion.click();
+                }
+            }
         });
     </script>
 </body>
