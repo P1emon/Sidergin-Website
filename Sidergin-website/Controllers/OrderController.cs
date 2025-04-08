@@ -18,5 +18,9 @@ namespace Sidergin_website.Controllers
         {
             return View();
         }
+        public IActionResult HistoryOrder()
+        {
+            return View();
+        }
     }
 }

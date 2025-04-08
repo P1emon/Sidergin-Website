@@ -1,0 +1,78 @@
+﻿@{
+    ViewData["Title"] = "Đơn hàng của tôi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="text-center">Đơn hàng của tôi</h2>
+
+<div class="d-flex justify-content-end mb-3">
+    <button id="refreshButton" class="btn btn-primary">
+        Làm mới
+    </button>
+</div>
+
+<div id="ordersContainer">
+    <p>Đang tải đơn hàng...</p>
+</div>
+
+@section Scripts {
+            <script>
+                document.addEventListener('DOMContentLoaded', async () => {
+                    await loadUserOrders();
+
+                    // Thêm sự kiện click cho nút làm mới
+                    document.getElementById('refreshButton').addEventListener('click', async () => {
+                        document.getElementById('ordersContainer').innerHTML = '<p>Đang tải đơn hàng...</p>';
+                        await loadUserOrders();
+                    });
+                });
+
+                async function loadUserOrders() {
+                    try {
+                        // Gọi API lấy danh sách đơn hàng - API sẽ tự lấy userId từ claims
+                        const response = await fetch('/api/orders/GetMyOrders', {
+                            method: 'GET',
+                            credentials: 'include'
+                        });
+
+                        const container = document.getElementById('ordersContainer');
+                        container.innerHTML = '';
+
+                        if (response.ok) {
+                            const orders = await response.json();
+
+                            if (orders.length === 0) {
+                                container.innerHTML = '<p>Không có đơn hàng nào.</p>';
+                                return;
+                            }
+
+                            orders.forEach(order => {
+                                const item = document.createElement('div');
+                                item.className = 'order-item border rounded p-3 my-2 shadow-sm';
+                                item.innerHTML = `
+                                    <p><strong>Mã đơn hàng:</strong> ${order.orderId}</p>
+                                    <p><strong>Ngày đặt:</strong> ${new Date(order.orderDate).toLocaleDateString()}</p>
+                                    <p><strong>Ngày giao:</strong> ${order.deliveryDate ? new Date(order.deliveryDate).toLocaleDateString() : 'Chưa giao'}</p>
+                                    <p><strong>Số lượng:</strong> ${order.quantity}</p>
+                                    <p><strong>Giá hiện tại:</strong> ${order.currentPrice.toLocaleString()} VND</p>
+                                    <p><strong>Tổng tiền:</strong> ${order.totalAmount.toLocaleString()} VND</p>
+                                    <p><strong>Phương thức thanh toán:</strong> ${order.paymentMethod}</p>
+                                    <p><strong>Trạng thái thanh toán:</strong> ${order.paymentStatus}</p>
+                                    <p><strong>Trạng thái đơn hàng:</strong> ${order.orderStatus}</p>
+                                    <p><strong>Ghi chú:</strong> ${order.notes || 'Không có'}</p>
+                                `;
+                                container.appendChild(item);
+                            });
+
+                        } else {
+                            const errorData = await response.json();
+                            container.innerHTML = `<p class="text-danger">${errorData.message || 'Không thể tải đơn hàng'}</p>`;
+                        }
+
+                    } catch (error) {
+                        console.error('Lỗi khi gọi API đơn hàng:', error);
+                        document.getElementById('ordersContainer').innerHTML = '<p class="text-danger">Lỗi khi tải đơn hàng.</p>';
+                    }
+                }
+            </script>
+}

@@ -10,6 +10,7 @@ using System.Net.Mail;
 using System.Net;
 using System.Threading.Tasks;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Sidergin_website.ApiControllers
 {
@@ -397,5 +398,51 @@ namespace Sidergin_website.ApiControllers
                 throw;
             }
         }
+        [HttpGet("GetMyOrders")]
+        [Authorize] // Yêu cầu người dùng đã đăng nhập
+        public async Task<IActionResult> GetMyOrders()
+        {
+            try
+            {
+                // Lấy userId từ claims
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim == null)
+                    return Unauthorized(new { message = "Người dùng chưa đăng nhập" });
+
+                if (!int.TryParse(userIdClaim.Value, out int userId))
+                    return BadRequest(new { message = "Mã người dùng không hợp lệ" });
+
+                var orders = await _context.Orders
+                    .Where(o => o.UserId == userId)
+                    .OrderByDescending(o => o.OrderDate)
+                    .Select(o => new
+                    {
+                        o.OrderId,
+                        o.Quantity,
+                        o.CurrentPrice,
+                        o.TotalAmount,
+                        o.PaymentMethod,
+                        o.PaymentStatus,
+                        o.OrderStatus,
+                        o.Notes,
+                        o.OrderDate,
+                        o.DeliveryDate
+                    })
+                    .ToListAsync();
+
+                if (orders == null || !orders.Any())
+                    return Ok(new List<object>()); // Trả về mảng rỗng thay vì NotFound
+
+                return Ok(orders);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi khi lấy danh sách đơn hàng của người dùng hiện tại");
+                return StatusCode(500, new { message = "Lỗi máy chủ khi lấy đơn hàng", error = ex.Message });
+            }
+        }
+
+
+
     }
 }
