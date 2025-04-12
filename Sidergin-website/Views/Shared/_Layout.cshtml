@@ -24,7 +24,6 @@
                 <li><a href="/">Giới thiệu</a></li>
                 <li><a href="~/News">Tin tức</a></li>
                 <li><a href="~/Faq/Index">Trợ giúp</a></li>
-                <li><a href="~/Home/Contact">Liên hệ</a></li>
                 <li id="auth-link">
                     @if (User.Identity.IsAuthenticated)
                     {
@@ -39,7 +38,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" asp-controller="Order" asp-action="HistoryOrder">
+                                    <a class="dropdown-item" asp-controller="Order" asp-action="GetMyOrders">
                                         Lịch sử đơn hàng
                                     </a>
                                 </li>

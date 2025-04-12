@@ -1,0 +1,255 @@
+﻿@model Sidergin_website.DTO.OrderDTO
+
+@{
+    ViewData["Title"] = "Thanh toán đơn hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Sử dụng layout chung
+}
+
+<div class="checkout-container">
+    <h1>Thanh toán đơn hàng</h1>
+
+    <form asp-action="CreateOrder" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3 text-center"></div>
+
+        <!-- Thông tin khách hàng -->
+        <div class="section">
+            <h3><i class="fas fa-user me-2"></i>Thông tin khách hàng</h3>
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label asp-for="UserName" class="form-label">Họ và tên</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                        <input asp-for="UserName" class="form-control" readonly="@(User.Identity.IsAuthenticated ? true : false)" />
+                    </div>
+                    <span asp-validation-for="UserName" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label asp-for="UserEmail" class="form-label">Email</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                        <input asp-for="UserEmail" class="form-control" readonly="@(User.Identity.IsAuthenticated ? true : false)" />
+                    </div>
+                    <span asp-validation-for="UserEmail" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label asp-for="UserPhone" class="form-label">Số điện thoại</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                        <input asp-for="UserPhone" class="form-control" readonly="@(User.Identity.IsAuthenticated ? true : false)" />
+                    </div>
+                    <span asp-validation-for="UserPhone" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Thông tin đơn hàng -->
+        <div class="section">
+            <h3><i class="fas fa-shopping-cart me-2"></i>Thông tin đơn hàng</h3>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label asp-for="Quantity" class="form-label">Số lượng</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-boxes"></i></span>
+                        <input asp-for="Quantity" class="form-control" type="number" readonly />
+                    </div>
+                    <span asp-validation-for="Quantity" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="CurrentPrice" class="form-label">Tổng giá (VNĐ)</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-money-bill-wave"></i></span>
+                        <input asp-for="CurrentPrice" class="form-control" type="number" readonly value="@(Model.Quantity * 400000)" />
+                    </div>
+                    <span asp-validation-for="CurrentPrice" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label asp-for="PaymentMethod" class="form-label">Phương thức thanh toán</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-credit-card"></i></span>
+                        <select asp-for="PaymentMethod" class="form-control">
+                            <option value="">Chọn phương thức thanh toán</option>
+                            <option value="COD">Thanh toán khi nhận hàng (COD)</option>
+                            <option value="VNPAY">Thanh toán qua VNPAY</option>
+                        </select>
+                    </div>
+                    <span asp-validation-for="PaymentMethod" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label asp-for="Notes" class="form-label">Ghi chú</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
+                        <textarea asp-for="Notes" class="form-control" rows="4"></textarea>
+                    </div>
+                    <span asp-validation-for="Notes" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hidden fields -->
+        <input asp-for="UserId" type="hidden" />
+        <input asp-for="OrderDate" type="hidden" />
+        <input asp-for="DeliveryDate" type="hidden" />
+        <input asp-for="VnpayTransactionId" type="hidden" value="@Model.VnpayTransactionId" />
+        <input asp-for="PaymentStatus" type="hidden" value="@Model.PaymentStatus" />
+        <input asp-for="OrderStatus" type="hidden" value="@Model.OrderStatus" />
+
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-check me-2"></i>Xác nhận thanh toán</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<style>
+    .checkout-container {
+        max-width: 900px; /* Tăng nhẹ để giao diện thoáng hơn */
+        margin: 50px auto;
+        background: #fff;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        padding: 40px;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .checkout-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(135deg, #6e5ff8 0%, #7d4de3 100%);
+        }
+
+        .checkout-container h1 {
+            font-weight: 700;
+            color: #333;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.2rem;
+        }
+
+    .section {
+        margin-bottom: 30px;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        border-left: 4px solid #6e5ff8;
+    }
+
+        .section h3 {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+    .form-label {
+        font-weight: 500;
+        color: #555;
+        margin-bottom: 8px;
+    }
+
+    .input-group {
+        position: relative;
+    }
+
+    .input-group-text {
+        background: #6e5ff8;
+        color: #fff;
+        border: none;
+        border-radius: 8px 0 0 8px;
+    }
+
+    .form-control {
+        border-radius: 0 8px 8px 0;
+        border: 1px solid #ddd;
+        padding: 10px;
+        transition: all 0.3s ease;
+        font-size: 1rem;
+    }
+
+        .form-control:focus {
+            border-color: #6e5ff8;
+            box-shadow: 0 0 8px rgba(110, 95, 248, 0.2);
+        }
+
+        .form-control[readonly] {
+            background-color: #f0f2f5;
+            color: #666;
+        }
+
+    select.form-control {
+        appearance: none;
+        background: url('data:image/svg+xml;utf8,<svg fill="gray" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 10px center;
+        background-size: 12px;
+    }
+
+    textarea.form-control {
+        resize: none;
+        border-radius: 8px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #6e5ff8 0%, #7d4de3 100%);
+        border: none;
+        padding: 12px 30px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #7d4de3 0%, #6e5ff8 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(110, 95, 248, 0.4);
+        }
+
+    .text-danger {
+        font-size: 0.9rem;
+        margin-top: 5px;
+    }
+</style>
+
+<script>
+    // Hiển thị SweetAlert2 nếu thông tin chưa đầy đủ
+    @if (TempData["ShowProfileAlert"] != null && (bool)TempData["ShowProfileAlert"])
+    {
+        <text>
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Thông tin chưa đầy đủ',
+                    text: 'Vui lòng bổ sung đầy đủ thông tin cá nhân (họ tên, email, số điện thoại) trước khi thanh toán.',
+                    confirmButtonText: 'Cập nhật thông tin',
+                    showCancelButton: true,
+                    cancelButtonText: 'Hủy',
+                    confirmButtonColor: '#6e5ff8',
+                    cancelButtonColor: '#dc3545'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '/Account/Edit'; // Chuyển hướng đến trang cập nhật thông tin
+                    }
+                });
+        </text>
+    }
+</script>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

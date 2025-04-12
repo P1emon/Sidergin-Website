@@ -1,0 +1,18 @@
+﻿@{
+    ViewData["Title"] = "Xác nhận đơn hàng";
+}
+
+<h1>Xác nhận đơn hàng</h1>
+
+<div class="container">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    <p>Cảm ơn bạn đã đặt hàng! Mã đơn hàng của bạn là <strong>#@ViewBag.OrderId</strong>.</p>
+    <p>Chúng tôi sẽ liên hệ với bạn sớm để xác nhận và xử lý đơn hàng.</p>
+    <a href="@Url.Action("Index", "Home")" class="btn btn-primary">Quay về trang chủ</a>
+</div>

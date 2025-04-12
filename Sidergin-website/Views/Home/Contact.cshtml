@@ -1,182 +1,407 @@
-﻿<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liên hệ - SIDERGIN Compresse</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="~/css/Contact.css">
-</head>
-<body>
-    <main class="contact-container">
-        <section class="contact-hero">
-            <h1>Liên hệ với chúng tôi</h1>
-            <p>Chúng tôi luôn sẵn sàng hỗ trợ bạn! Hãy liên hệ với chúng tôi nếu bạn có bất kỳ câu hỏi nào về sản phẩm SIDERGIN Compresse.</p>
-        </section>
+﻿@model Sidergin_website.Models.Contact
 
-        <section class="contact-content">
-            <div class="contact-form-section">
-                <h2>Gửi tin nhắn cho chúng tôi</h2>
-                <form id="contact-form" action="mailto:admin123@gmail.com" method="post" enctype="text/plain">
-                    <div class="form-group">
-                        <input type="text" id="name" name="name" placeholder=" " required>
-                        <label for="name">Họ và tên</label>
-                        <small>Vui lòng nhập đầy đủ họ tên của bạn</small>
-                    </div>
+@{
+    ViewData["Title"] = "Liên hệ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
 
-                    <div class="form-group">
-                        <input type="tel" id="phone" name="phone" placeholder=" " required>
-                        <label for="phone">Số điện thoại</label>
-                        <small>Nhập số điện thoại để chúng tôi liên hệ lại</small>
-                    </div>
+<main class="contact-container">
+    <section class="contact-hero">
+        <h1>Liên hệ với chúng tôi</h1>
+        <p>Chúng tôi luôn sẵn sàng hỗ trợ bạn! Hãy liên hệ với chúng tôi nếu bạn có bất kỳ câu hỏi nào về sản phẩm SIDERGIN Compresse.</p>
+    </section>
 
-                    <div class="form-group">
-                        <input type="email" id="email" name="email" placeholder=" " required>
-                        <label for="email">Email</label>
-                        <small>Nhập email để nhận phản hồi từ chúng tôi</small>
-                    </div>
+    <section class="contact-content">
+        <div class="contact-form-section">
+            <h2>Gửi tin nhắn cho chúng tôi</h2>
 
-                    <div class="form-group">
-                        <textarea id="message" name="message" placeholder=" " required></textarea>
-                        <label for="message">Tin nhắn</label>
-                        <small>Viết nội dung tin nhắn của bạn</small>
-                    </div>
-
-                    <button type="submit" class="submit-btn">
-                        <span>Gửi tin nhắn</span>
-                        <i class="fas fa-paper-plane"></i>
-                    </button>
-                </form>
-
-                <div class="response-banner">
-                    <i class="fas fa-clock"></i>
-                    <p>Chúng tôi sẽ phản hồi tin nhắn của bạn trong vòng <strong>24 giờ</strong> làm việc.</p>
+            <!-- Hiển thị thông báo thành công hoặc lỗi -->
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @TempData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
-            </div>
-
-            <div class="contact-info-section">
-                <h2>Thông tin liên hệ</h2>
-                <div class="contact-info">
-                    <div class="contact-item">
-                        <i class="fas fa-phone"></i>
-                        <div>
-                            <h4>Điện thoại</h4>
-                            <p>0123456789</p>
-                            <p>Thời gian: 8:00 - 17:30 (Thứ 2 - Thứ 6)</p>
-                        </div>
-                    </div>
-
-                    <div class="contact-item">
-                        <i class="fas fa-comments"></i>
-                        <div>
-                            <h4>Zalo</h4>
-                            <p>0123456789</p>
-                            <p>Nhắn tin Zalo để được hỗ trợ nhanh nhất</p>
-                        </div>
-                    </div>
-
-                    <div class="contact-item">
-                        <i class="fas fa-envelope"></i>
-                        <div>
-                            <h4>Email</h4>
-                            <p><a href="mailto:admin123@gmail.com">admin123@gmail.com</a></p>
-                            <p>Chúng tôi sẽ phản hồi email trong vòng 24 giờ</p>
-                        </div>
-                    </div>
-
-                    <div class="contact-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <div>
-                            <h4>Địa chỉ</h4>
-                            <p>123 Đường Số 1, Quận 1, TP. Hồ Chí Minh</p>
-                            <p>Giờ làm việc: 8:00 - 17:30 (Thứ 2 - Thứ 6)</p>
-                        </div>
-                    </div>
-
-                    <div class="social-media-section">
-                        <h3>Theo dõi chúng tôi</h3>
-                        <div class="social-icons">
-                            <a href="#" class="social-icon" aria-label="Facebook">
-                                <i class="fab fa-facebook-f"></i>
-                            </a>
-                            <a href="#" class="social-icon" aria-label="Instagram">
-                                <i class="fab fa-instagram"></i>
-                            </a>
-                            <a href="#" class="social-icon" aria-label="Youtube">
-                                <i class="fab fa-youtube"></i>
-                            </a>
-                            <a href="#" class="social-icon" aria-label="Tiktok">
-                                <i class="fab fa-tiktok"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="map-section">
-            <h2>Địa điểm của chúng tôi</h2>
-            <div class="map-container">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.447979614614!2d106.69875531474895!3d10.776389992317!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f38f8b5d803%3A0x4e0b2b0e2b0e2b0e!2sHo%20Chi%20Minh%20City%2C%20Vietnam!5e0!3m2!1sen!2s!4v1698765432100!5m2!1sen!2s" width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-            </div>
-        </section>
-
-        @* <section class="faq-section">
-            <h2>Câu hỏi thường gặp</h2>
-            <div class="faq-item">
-                <div class="faq-question">Làm thế nào để đặt hàng SIDERGIN Compresse?</div>
-                <div class="faq-answer">Bạn có thể đặt hàng trực tiếp trên website của chúng tôi, gọi điện thoại theo số 0123456789, hoặc nhắn tin qua Zalo. Chúng tôi sẽ hỗ trợ bạn trong quá trình đặt hàng.</div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-question">Thời gian giao hàng là bao lâu?</div>
-                <div class="faq-answer">Thời gian giao hàng từ 1-3 ngày làm việc đối với khu vực nội thành và 3-5 ngày đối với khu vực ngoại thành và các tỉnh thành khác.</div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-question">Sản phẩm SIDERGIN Compresse có những công dụng gì?</div>
-                <div class="faq-answer">SIDERGIN Compresse giúp bổ sung sắt, acid folic và các vitamin vào chế độ ăn uống hàng ngày, hỗ trợ cải thiện chỉ số công thức máu, tăng cường sức đề kháng và hệ miễn dịch.</div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-question">Làm thế nào để được tư vấn trước khi mua sản phẩm?</div>
-                <div class="faq-answer">Bạn có thể liên hệ với chúng tôi qua số điện thoại, Zalo, email hoặc điền vào form liên hệ trên trang web. Đội ngũ tư vấn viên sẽ giải đáp mọi thắc mắc của bạn.</div>
-            </div>
-        </section> *@
-    </main>
-
-    <script>
-        // Xử lý form
-        document.getElementById('contact-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            // Mô phỏng gửi dữ liệu
-            setTimeout(function() {
-                // Hiển thị thông báo thành công
-                alert('Cảm ơn bạn đã gửi tin nhắn! Chúng tôi sẽ liên hệ lại trong thời gian sớm nhất.');
-                document.getElementById('contact-form').reset();
-            }, 1000);
-        });
-
-        // Hiệu ứng float label
-        const formInputs = document.querySelectorAll('.form-group input, .form-group textarea');
-        formInputs.forEach(input => {
-            input.addEventListener('focus', function() {
-                this.parentElement.classList.add('focused');
-            });
-
-            input.addEventListener('blur', function() {
-                if (this.value === '') {
-                    this.parentElement.classList.remove('focused');
-                }
-            });
-
-            // Kiểm tra nếu input đã có giá trị
-            if (input.value !== '') {
-                input.parentElement.classList.add('focused');
             }
-        });
-    </script>
-</body>
-</html>
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    @TempData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <form asp-action="Contact" method="post">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="form-group">
+                    <input asp-for="Phone" class="form-control" placeholder=" " required>
+                    <label for="Phone">Số điện thoại</label>
+                    <small>Nhập số điện thoại để chúng tôi liên hệ lại</small>
+                    <span asp-validation-for="Phone" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <input asp-for="Email" class="form-control" placeholder=" " required>
+                    <label for="Email">Email</label>
+                    <small>Nhập email để nhận phản hồi từ chúng tôi</small>
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <input asp-for="Address" class="form-control" placeholder=" ">
+                    <label for="Address">Địa chỉ</label>
+                    <small>Nhập địa chỉ của bạn (không bắt buộc)</small>
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <input asp-for="Zalo" class="form-control" placeholder=" ">
+                    <label for="Zalo">Zalo</label>
+                    <small>Nhập số Zalo của bạn (không bắt buộc)</small>
+                    <span asp-validation-for="Zalo" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <span>Gửi tin nhắn</span>
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </form>
+
+            <div class="response-banner">
+                <i class="fas fa-clock"></i>
+                <p>Chúng tôi sẽ phản hồi tin nhắn của bạn trong vòng <strong>24 giờ</strong> làm việc.</p>
+            </div>
+        </div>
+
+        <div class="contact-info-section">
+            <h2>Thông tin liên hệ</h2>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <i class="fas fa-phone"></i>
+                    <div>
+                        <h4>Điện thoại</h4>
+                        <p>0123456789</p>
+                        <p>Thời gian: 8:00 - 17:30 (Thứ 2 - Thứ 6)</p>
+                    </div>
+                </div>
+
+                <div class="contact-item">
+                    <i class="fas fa-comments"></i>
+                    <div>
+                        <h4>Zalo</h4>
+                        <p>0123456789</p>
+                        <p>Nhắn tin Zalo để được hỗ trợ nhanh nhất</p>
+                    </div>
+                </div>
+
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <div>
+                        <h4>Email</h4>
+                        <p><a href="mailto:admin123@gmail.com">admin123@gmail.com</a></p>
+                        <p>Chúng tôi sẽ phản hồi email trong vòng 24 giờ</p>
+                    </div>
+                </div>
+
+                <div class="contact-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div>
+                        <h4>Địa chỉ</h4>
+                        <p>123 Đường Số 1, Quận 1, TP. Hồ Chí Minh</p>
+                        <p>Giờ làm việc: 8:00 - 17:30 (Thứ 2 - Thứ 6)</p>
+                    </div>
+                </div>
+
+                <div class="social-media-section">
+                    <h3>Theo dõi chúng tôi</h3>
+                    <div class="social-icons">
+                        <a href="#" class="social-icon" aria-label="Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="social-icon" aria-label="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="social-icon" aria-label="Youtube">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        <a href="#" class="social-icon" aria-label="Tiktok">
+                            <i class="fab fa-tiktok"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="map-section">
+        <h2>Địa điểm của chúng tôi</h2>
+        <div class="map-container">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.447979614614!2d106.69875531474895!3d10.776389992317!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f38f8b5d803%3A0x4e0b2b0e2b0e2b0e!2sHo%20Chi%20Minh%20City%2C%20Vietnam!5e0!3m2!1sen!2s!4v1698765432100!5m2!1sen!2s" width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+    </section>
+</main>
+
+<style>
+    .contact-container {
+        max-width: 1200px;
+        margin: 50px auto;
+        padding: 0 15px;
+    }
+
+    .contact-hero {
+        text-align: center;
+        padding: 40px 0;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        border-radius: 15px;
+        margin-bottom: 30px;
+    }
+
+        .contact-hero h1 {
+            font-weight: 700;
+            color: #333;
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .contact-hero p {
+            font-size: 1.1rem;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+    .contact-content {
+        display: flex;
+        gap: 30px;
+        margin-bottom: 50px;
+    }
+
+    .contact-form-section, .contact-info-section {
+        flex: 1;
+        background: #fff;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        padding: 30px;
+    }
+
+        .contact-form-section h2, .contact-info-section h2 {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+            .contact-form-section h2::before, .contact-info-section h2::before {
+                content: '';
+                display: inline-block;
+                width: 40px;
+                height: 3px;
+                background: linear-gradient(135deg, #6e5ff8 0%, #7d4de3 100%);
+                margin-right: 10px;
+            }
+
+    .form-group {
+        position: relative;
+        margin-bottom: 25px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+        .form-control:focus {
+            border-color: #6e5ff8;
+            box-shadow: 0 0 8px rgba(110, 95, 248, 0.2);
+            outline: none;
+        }
+
+    .form-group label {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        font-size: 1rem;
+        color: #666;
+        transition: all 0.3s ease;
+        pointer-events: none;
+    }
+
+    .form-group .form-control:focus + label,
+    .form-group .form-control:not(:placeholder-shown) + label {
+        top: -10px;
+        left: 10px;
+        font-size: 0.8rem;
+        color: #6e5ff8;
+        background: #fff;
+        padding: 0 5px;
+    }
+
+    .form-group small {
+        display: block;
+        font-size: 0.8rem;
+        color: #888;
+        margin-top: 5px;
+    }
+
+    .text-danger {
+        font-size: 0.8rem;
+        margin-top: 5px;
+    }
+
+    .submit-btn {
+        background: linear-gradient(135deg, #6e5ff8 0%, #7d4de3 100%);
+        border: none;
+        padding: 12px 30px;
+        border-radius: 50px;
+        color: #fff;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+        transition: all 0.3s ease;
+    }
+
+        .submit-btn:hover {
+            background: linear-gradient(135deg, #7d4de3 0%, #6e5ff8 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(110, 95, 248, 0.4);
+        }
+
+    .response-banner {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 20px;
+        color: #666;
+    }
+
+        .response-banner i {
+            color: #6e5ff8;
+            font-size: 1.2rem;
+        }
+
+        .response-banner p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        .response-banner strong {
+            color: #333;
+        }
+
+    .contact-info-section .contact-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+        .contact-info-section .contact-item i {
+            font-size: 1.5rem;
+            color: #6e5ff8;
+            margin-top: 5px;
+        }
+
+        .contact-info-section .contact-item h4 {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+
+        .contact-info-section .contact-item p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .contact-info-section .contact-item a {
+            color: #6e5ff8;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+            .contact-info-section .contact-item a:hover {
+                color: #7d4de3;
+            }
+
+    .social-media-section {
+        margin-top: 30px;
+    }
+
+        .social-media-section h3 {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+    .social-icons {
+        display: flex;
+        gap: 15px;
+    }
+
+    .social-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        background: #f8f9fa;
+        border-radius: 50%;
+        color: #6e5ff8;
+        transition: all 0.3s ease;
+    }
+
+        .social-icon:hover {
+            background: #6e5ff8;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(110, 95, 248, 0.4);
+        }
+
+    .map-section {
+        margin-bottom: 50px;
+    }
+
+        .map-section h2 {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+            .map-section h2::before {
+                content: '';
+                display: inline-block;
+                width: 40px;
+                height: 3px;
+                background: linear-gradient(135deg, #6e5ff8 0%, #7d4de3 100%);
+                margin-right: 10px;
+                vertical-align: middle;
+            }
+
+    .map-container {
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+</style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

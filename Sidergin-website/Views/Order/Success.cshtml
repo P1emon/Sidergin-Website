@@ -1,0 +1,151 @@
+﻿@model Sidergin_website.Models.Order
+
+@{
+    ViewData["Title"] = "Thanh toán thành công";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Sử dụng layout chung
+}
+
+<div class="success-container">
+    <div class="success-content">
+        <div class="icon-wrapper">
+            <i class="fas fa-check-circle icon"></i>
+        </div>
+        <h1>Thanh toán thành công!</h1>
+        <p class="lead">Cảm ơn bạn đã mua sắm tại <span class="highlight">SIDERGIN</span>. Đơn hàng của bạn đã được xác nhận.</p>
+
+        <div class="order-info">
+            <h4 class="order-title">Thông tin đơn hàng</h4>
+            <div class="order-details">
+                <div class="order-item">
+                    <span class="label">Mã đơn hàng:</span>
+                    <span class="value highlight">#@Model.OrderId</span>
+                </div>
+                <div class="order-item">
+                    <span class="label">Số lượng:</span>
+                    <span class="value">@Model.Quantity</span>
+                </div>
+                <div class="order-item">
+                    <span class="label">Tổng tiền:</span>
+                    <span class="value highlight">@string.Format("{0:N0} VNĐ", Model.TotalAmount)</span>
+                </div>
+                <div class="order-item">
+                    <span class="label">Phương thức thanh toán:</span>
+                    <span class="value">@Model.PaymentMethod</span>
+                </div>
+                <div class="order-item">
+                    <span class="label">Trạng thái:</span>
+                    <span class="value">@Model.OrderStatus</span>
+                </div>
+                @if (!string.IsNullOrEmpty(Model.Notes))
+                {
+                    <div class="order-item">
+                        <span class="label">Ghi chú:</span>
+                        <span class="value">@Model.Notes</span>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <p>Chúng tôi sẽ liên hệ với bạn sớm để xác nhận và xử lý đơn hàng.</p>
+        <a href="@Url.Action("Index", "Home")" class="btn btn-primary">Quay về trang chủ</a>
+    </div>
+</div>
+
+<style>
+    .success-container {
+        max-width: 600px; /* Giảm max-width để giống hình ảnh */
+        margin: 50px auto;
+        padding: 0 15px;
+    }
+
+    .success-content {
+        background: #fff;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* Giảm shadow để giống hình ảnh */
+        padding: 40px;
+        text-align: center;
+    }
+
+    .icon-wrapper {
+        display: inline-block;
+        padding: 15px;
+        background: #28a745;
+        border-radius: 50%;
+        margin-bottom: 20px;
+    }
+
+    .icon {
+        font-size: 40px; /* Giảm kích thước icon để giống hình ảnh */
+        color: #fff;
+    }
+
+    .success-content h1 {
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 15px;
+        font-size: 2rem; /* Giảm kích thước font để giống hình ảnh */
+    }
+
+    .success-content .lead {
+        font-size: 1rem; /* Giảm kích thước font để giống hình ảnh */
+        color: #666;
+        margin-bottom: 30px;
+    }
+
+    .order-info {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+
+    .order-title {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 15px;
+        font-size: 1.2rem;
+        text-align: left; /* Căn trái tiêu đề */
+    }
+
+    .order-details {
+        text-align: left; /* Căn trái nội dung */
+    }
+
+    .order-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid #ddd;
+    }
+
+        .order-item .label {
+            font-weight: 500;
+            color: #666;
+        }
+
+        .order-item .value {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .order-item .highlight {
+            color: #007bff; /* Màu xanh giống hình ảnh */
+        }
+
+    .btn-primary {
+        background: #007bff; /* Màu xanh giống hình ảnh */
+        border: none;
+        padding: 10px 25px;
+        border-radius: 5px; /* Giảm border-radius để giống hình ảnh */
+        font-weight: 600;
+        transition: all 0.3s ease;
+        color: white;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+        .btn-primary:hover {
+            background: #0056b3; /* Màu xanh đậm hơn khi hover */
+            box-shadow: 0 3px 10px rgba(0, 123, 255, 0.3);
+        }
+</style>

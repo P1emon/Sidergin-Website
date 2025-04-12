@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SIDERGIN Compresse - Sản phẩm chính hãng</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link hrefuppe="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="~/css/styles.css">
 </head>
@@ -47,15 +47,15 @@
                 <div class="quantity-selector">
                     <label for="quantity">Số lượng:</label>
                     <div class="quantity-controls">
-                        <button class="quantity-btn" onclick="decreaseQuantity()">-</button>
+                        <button type="button" class="quantity-btn" onclick="decreaseQuantity()">-</button>
                         <input type="number" id="quantity" value="1" min="1">
-                        <button class="quantity-btn" onclick="increaseQuantity()">+</button>
+                        <button type="button" class="quantity-btn" onclick="increaseQuantity()">+</button>
                     </div>
                 </div>
 
                 <div class="purchase-type">
-                    <button class="type-btn wholesale" onclick="window.location.href='Order/Index'">Sỉ</button>
-                    <button class="type-btn retail active" onclick="goToRetailPage()">Lẻ</button>
+                    <button class="type-btn wholesale" onclick="window.location.href='Home/Contact'">Sỉ</button>
+                    <button class="type-btn retail active" onclick="goToCheckout()">Lẻ</button>
                 </div>
             </div>
         </div>
@@ -144,10 +144,11 @@
             }
         }
 
-        // Chuyển hướng đến trang thanh toán với số lượng
-        function goToRetailPage() {
+        // Chuyển hướng đến trang checkout với số lượng và giá
+        function goToCheckout() {
             const quantity = document.getElementById('quantity').value;
-            window.location.href = 'Order/Retail?quantity=' + quantity;
+            const currentPrice = 400000; // Giá sản phẩm từ trang (400.000 VNĐ)
+            window.location.href = `/Order/Checkout?quantity=${quantity}&currentPrice=${currentPrice}`;
         }
 
         // Chuyển đổi tab
