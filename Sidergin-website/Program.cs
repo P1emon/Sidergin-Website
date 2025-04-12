@@ -10,6 +10,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddSingleton<RssFeedService>();
 
+builder.Services.AddScoped<Sidergin_website.Services.OrderOperations>();
+
+
+
 
 // Configure session
 builder.Services.AddSession(options =>
@@ -53,6 +57,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
+
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

@@ -1305,3 +1305,11 @@ footer {
         height: 60px;
     }
 }
+.table-order td {
+    color: #333;
+}
+
+.table-order .text-price {
+    color: #e91e63;
+    font-weight: bold;
+}

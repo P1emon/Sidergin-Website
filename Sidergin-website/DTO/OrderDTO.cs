@@ -15,5 +15,6 @@
         public string UserEmail { get; set; }
         public string UserName { get; set; }
         public string UserPhone { get; set; }
+        public decimal TotalAmount { get; set; }
     }
 }

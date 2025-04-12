@@ -1,0 +1,73 @@
+﻿
+@model List<Sidergin_website.DTO.OrderDTO>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIDERGIN Compresse - Sản phẩm chính hãng</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+ 
+
+</head>
+<body>
+
+
+<h2 class="mb-4 text-primary">📦 Danh sách đơn hàng</h2>
+
+    <table class="table table-bordered table-hover align-middle table-order">
+        <thead class="table-light">
+            <tr class="text-center">
+                <th>Tên khách hàng</th>
+                <th>SĐT</th>
+                <th>Email</th>
+                <th>Thành tiền</th>
+                <th>Phương thức thanh toán</th>
+                <th>Trạng thái</th>
+                <th>Địa chỉ</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.UserName</td>
+                    <td>@item.UserPhone</td>
+                    <td>@item.UserEmail</td>
+                    <td class="text-end text-success fw-bold">@item.TotalAmount.ToString("N0") đ</td>
+                    <td>@item.PaymentMethod</td>
+                    <td>
+                        @if (item.PaymentStatus == "Đã thanh toán")
+                        {
+                            <span class="badge bg-success">@item.PaymentStatus</span>
+                        }
+                        else if (item.PaymentStatus == "Chưa thanh toán")
+                        {
+                            <span class="badge bg-warning text-dark">@item.PaymentStatus</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">@item.PaymentStatus</span>
+                        }
+                    </td>
+                    <td>@item.Notes</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h2>Giao hàng Ahamove</h2>
+    <p>Click nút bên dưới để mở hệ thống giao hàng Ahamove.</p>
+
+    <a href="https://app.ahamove.com/" target="_blank" class="btn btn-primary">Mở Ahamove</a>
+   
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
