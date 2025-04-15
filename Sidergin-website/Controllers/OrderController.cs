@@ -37,7 +37,7 @@ namespace Sidergin_website.Controllers
             var model = new OrderDTO
             {
                 Quantity = quantity.HasValue && quantity > 0 ? quantity.Value : 1,
-                CurrentPrice = (quantity.HasValue && quantity > 0 ? quantity.Value : 1) * 400000,
+                CurrentPrice = 720000,
                 OrderDate = DateTime.UtcNow,
                 PaymentMethod = "COD",
                 OrderStatus = "Pending",
@@ -153,7 +153,7 @@ namespace Sidergin_website.Controllers
             {
                 vnpayTransactionId = orderDto.VnpayTransactionId;
             }
-
+            orderDto.CurrentPrice = 720000;
             // Tạo đơn hàng
             var order = new Order
             {
