@@ -39,7 +39,7 @@
             </div>
 
             <div class="price-info">
-                <div class="price">400.000 VNĐ</div>
+                <div class="price">720.000 VNĐ</div>
                 <div class="availability">Còn hàng</div>
             </div>
 
@@ -54,7 +54,8 @@
                 </div>
 
                 <div class="purchase-type">
-                    <button class="type-btn wholesale" onclick="window.location.href='Home/Contact'">Sỉ</button>
+                    <a asp-controller="Order" asp-action="Index" class="type-btn wholesale">Sỉ</a>
+
                     <button class="type-btn retail active" onclick="goToCheckout()">Lẻ</button>
                 </div>
             </div>
@@ -147,7 +148,7 @@
         // Chuyển hướng đến trang checkout với số lượng và giá
         function goToCheckout() {
             const quantity = document.getElementById('quantity').value;
-            const currentPrice = 400000; // Giá sản phẩm từ trang (400.000 VNĐ)
+            const currentPrice = 720000; // Giá sản phẩm từ trang (720.000 VNĐ)
             window.location.href = `/Order/Checkout?quantity=${quantity}&currentPrice=${currentPrice}`;
         }
 

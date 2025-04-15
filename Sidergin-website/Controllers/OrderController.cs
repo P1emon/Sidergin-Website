@@ -27,7 +27,10 @@ namespace Sidergin_website.Controllers
             _configuration = configuration;
             _logger = logger;
         }
-
+        public IActionResult Index()
+        {
+            return View();
+        }
         [HttpGet]
         public IActionResult Checkout(int? quantity, decimal? currentPrice)
         {
