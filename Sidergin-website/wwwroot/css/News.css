@@ -1,5 +1,4 @@
-﻿
-:root {
+﻿:root {
     --primary: #1A5F7A;
     --primary-light: #2a7090;
     --primary-dark: #0e4a62;
@@ -14,7 +13,7 @@
 }
 
 .news-container {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Segoe UI', sans-serif;
     color: var(--dark);
     background-color: var(--light);
     overflow-x: hidden;
@@ -27,19 +26,30 @@
     margin-bottom: 2rem;
     color: var(--white);
     position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.hero-title-container {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 1rem;
 }
 
 .hero-title {
     font-size: 3rem;
     font-weight: 700;
     margin-bottom: 1rem;
+    text-align: center;
 }
 
 .hero-subtitle {
     font-size: 1.2rem;
     opacity: 0.9;
     max-width: 600px;
-    margin-bottom: 0;
+    margin: 0 auto;
+    text-align: center;
 }
 
 .hero-graphic {

@@ -1,5 +1,4 @@
-﻿<!-- Views/News/Index.cshtml -->
-@model List<NewsItem>
+﻿@model List<NewsItem>
 
 @{
     ViewData["Title"] = "Tin tức Y tế Việt Nam";
@@ -11,11 +10,13 @@
     <div class="hero-section">
         <div class="container">
             <div class="row align-items-center">
-                <div class="col-lg-8">
-                    <h1 class="hero-title">Tin Tức Y Tế Việt Nam</h1>
-                    <p class="hero-subtitle">Tổng hợp tin tức y tế từ các nguồn chính thống uy tín nhất</p>
+                <div class="col-12 text-center">
+                    <div class="hero-title-container">
+                        <h1 class="hero-title">Tin Tức Y Tế Việt Nam</h1>
+                        <p class="hero-subtitle">Tổng hợp tin tức y tế từ các nguồn chính thống uy tín nhất</p>
+                    </div>
                 </div>
-                <div class="col-lg-4 d-none d-lg-block">
+                <div class="col-12 text-center d-lg-block">
                     <div class="hero-graphic">
                         <i class="fas fa-heartbeat pulse-icon"></i>
                     </div>
@@ -196,8 +197,6 @@
         </div>
     </div>
 </div>
-
-
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
