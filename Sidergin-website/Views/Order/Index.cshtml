@@ -91,6 +91,16 @@
 
         async function handleCheckout(event) {
             event.preventDefault();
+
+            // Hiển thị loading khi bắt đầu xử lý
+            const loadingSwal = Swal.fire({
+                title: 'Đang xử lý đơn hàng...',
+                html: 'Vui lòng chờ trong giây lát',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
             let quantity = parseInt(document.getElementById("order-quantity-input").value);
 
             // Lấy thông tin khách hàng từ form
@@ -100,6 +110,7 @@
             const customerAddress = document.getElementById("checkout-address").value;
 
             if (quantity < 50) {
+                await Swal.close();
                 Swal.fire({
                     title: "Lỗi!",
                     text: "Số lượng đặt hàng tối thiểu là 50.",
@@ -154,6 +165,7 @@
                 });
 
                 const result = await response.json();
+                await Swal.close(); // Đóng loading khi có kết quả
                 if (response.ok) {
                     Swal.fire({
                         title: "Đặt hàng thành công!      \n Nhân viên sẽ sớm liên hệ với bạn.",
@@ -169,6 +181,7 @@
                     });
                 }
             } catch (error) {
+                await Swal.close(); // Đóng loading khi có lỗi
                 Swal.fire({
                     title: "Lỗi kết nối!",
                     text: "Vui lòng thử lại sau.",
